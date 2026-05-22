@@ -1,0 +1,140 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-5">
+        <div class="col-12 text-center">
+          <h2 class="text-white font-weight-bold mb-1"><i class="fa-solid fa-shield-halved text-info me-2"></i>TVM Secure Payment Gateway</h2>
+          <p class="text-secondary mb-0">128-bit Encrypted Transaction Interface. Please verify your billing items before finalizing.</p>
+        </div>
+      </div>
+
+      <!-- Checkout Form Layout -->
+      <div class="row justify-content-center">
+        <div class="col-xl-9">
+          <div class="glass-card shadow-lg p-5">
+            <div class="row g-5">
+              
+              <!-- Invoice summary -->
+              <div class="col-lg-6 border-end border-secondary">
+                <h5 class="text-white font-weight-bold mb-4 border-bottom border-secondary pb-3">
+                  <i class="fa-solid fa-receipt text-info me-2"></i>Invoice Billing Summary
+                </h5>
+                
+                <div class="d-flex flex-column gap-3 text-secondary fs-7 mb-4">
+                  <div class="d-flex justify-content-between">
+                    <span>Invoice Title:</span>
+                    <strong class="text-white"><%= invoice.title %></strong>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Student Registration:</span>
+                    <strong class="text-white"><%= user.name %> (<%= invoice.studentId %>)</strong>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Billing Due Date:</span>
+                    <strong class="text-white"><%= new Date(invoice.dueDate).toLocaleDateString('en-IN') %></strong>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Outstanding Dues:</span>
+                    <strong class="text-white font-weight-bold">₹<%= invoice.amount %></strong>
+                  </div>
+                </div>
+
+                <div class="p-3 rounded border border-info" style="background: rgba(0, 242, 254, 0.03);">
+                  <h6 class="text-info font-weight-bold mb-2 fs-8"><i class="fa-solid fa-circle-info me-2"></i>Simulated Sandbox Mode</h6>
+                  <p class="text-secondary mb-0 fs-9" style="line-height: 1.4;">
+                    You are checking out in TVM Local Sandbox mode. No actual money will be charged. Clicking checkout will instantly clear this invoice and generate your receipt reference ID!
+                  </p>
+                </div>
+              </div>
+
+              <!-- Payment Form -->
+              <div class="col-lg-6">
+                <h5 class="text-white font-weight-bold mb-4 border-bottom border-secondary pb-3">
+                  <i class="fa-solid fa-credit-card text-success me-2"></i>Stripe Credit Card Form
+                </h5>
+                
+                <form action="/student/checkout" method="POST" id="checkoutForm" onsubmit="triggerPaymentLoader(event)">
+                  <input type="hidden" name="invoiceId" value="<%= invoice._id %>">
+
+                  <div class="mb-3">
+                    <label class="glass-label fs-8">Cardholder Full Name</label>
+                    <input type="text" class="form-control glass-input" required value="<%= user.name %>" placeholder="e.g. <%= user.name %>">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="glass-label fs-8">16-Digit Card Number</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-credit-card"></i></span>
+                      <input type="text" class="form-control glass-input" required pattern="\d{16}" maxlength="16" placeholder="4242 4242 4242 4242" value="4242424242424242">
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                      <label class="glass-label fs-8">Expiry (MM/YY)</label>
+                      <input type="text" class="form-control glass-input" required pattern="\d{2}/\d{2}" maxlength="5" placeholder="12/30" value="12/30">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="glass-label fs-8">CVV / Security Code</label>
+                      <input type="password" class="form-control glass-input" required pattern="\d{3}" maxlength="3" placeholder="321" value="321">
+                    </div>
+                  </div>
+
+                  <!-- Checkout Button with loading spinner -->
+                  <div class="d-grid mt-4">
+                    <button type="submit" id="payButton" class="btn btn-tvm-primary py-3 d-flex justify-content-center align-items-center gap-2">
+                      <i class="fa-solid fa-lock me-1"></i> Authorize & Pay ₹<%= invoice.amount %>
+                    </button>
+                  </div>
+                </form>
+
+                <!-- Processing feedback banner -->
+                <div id="paymentLoadingBanner" style="display: none;" class="text-center py-4 mt-3">
+                  <div class="spinner-border text-info mb-3" role="status"></div>
+                  <h6 class="text-white font-weight-bold mb-1">Authorizing Sandbox Transaction...</h6>
+                  <p class="text-secondary mb-0 fs-9">Processing 3D-Secure authentication token. Do not close window.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function triggerPaymentLoader(event) {
+    event.preventDefault();
+    
+    // Hide form buttons, display loading animation ticker
+    document.getElementById('checkoutForm').style.opacity = '0.3';
+    document.getElementById('payButton').disabled = true;
+    document.getElementById('paymentLoadingBanner').style.display = 'block';
+    
+    // Auto submit after short interactive delay
+    setTimeout(() => {
+      document.getElementById('checkoutForm').submit();
+    }, 2000);
+  }
+</script>
+
+<%- include('../partials/footer') %>

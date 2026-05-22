@@ -1,0 +1,115 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">Homework Board & Syllabuses</h2>
+          <p class="text-secondary mb-0">Access daily homework lessons, reading assignments, and class syllabuses uploaded by your teachers.</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Homework feed -->
+        <div class="col-xl-8">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-4">
+              <i class="fa-solid fa-book-open-reader text-info me-2"></i>My Class Homework Assignments
+            </h5>
+            
+            <% if (homeworkPosts.length === 0) { %>
+              <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-folder-open display-4 mb-3 d-block text-secondary"></i>
+                No homework assignments recorded recently for your class. Celebrate!
+              </div>
+            <% } else { %>
+              <div class="d-flex flex-column gap-3">
+                <% homeworkPosts.forEach(post => { %>
+                  <div class="p-3 rounded-3 border border-secondary" style="background: rgba(255, 255, 255, 0.015);">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                      <div>
+                        <h6 class="text-white font-weight-bold mb-1"><%= post.title %></h6>
+                        <small class="text-secondary">
+                          <i class="fa-regular fa-user me-1"></i> Posted by <%= post.createdBy %> 
+                          &nbsp;&bull;&nbsp; 
+                          <i class="fa-regular fa-calendar-days me-1"></i> <%= new Date(post.createdAt).toLocaleDateString('en-IN') %>
+                        </small>
+                      </div>
+                      
+                      <!-- Extract subject from title or content if tags match -->
+                      <% const subMatch = post.title.match(/\(([^)]+)\)/) %>
+                      <span class="status-badge status-present">
+                        <%= subMatch ? subMatch[1] : 'Academics' %>
+                      </span>
+                    </div>
+                    
+                    <!-- Clean pre-wrap display to support text list breaks -->
+                    <p class="text-secondary mb-0 fs-7" style="white-space: pre-wrap; line-height: 1.6;"><%= post.content %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Academic resources helper -->
+        <div class="col-xl-4">
+          <div class="glass-card shadow-lg h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Study Tips & Submission Advice</h5>
+              <p class="text-secondary mb-3 fs-7" style="line-height: 1.5;">
+                To submit exercises and remain synchronized with faculty:
+              </p>
+              
+              <ul class="list-unstyled d-flex flex-column gap-3 mb-0 fs-7 text-secondary">
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-circle-check text-info mt-1"></i>
+                  <div>
+                    <strong class="text-white">Note Timelines:</strong> Complete questions ahead of timelines listed in descriptions.
+                  </div>
+                </li>
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-circle-check text-info mt-1"></i>
+                  <div>
+                    <strong class="text-white">Structured Files:</strong> Write neatly on notebooks and compile files according to faculty instructions.
+                  </div>
+                </li>
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-circle-check text-info mt-1"></i>
+                  <div>
+                    <strong class="text-white">Department Queries:</strong> Contact teachers directly during department hours if you need further syllabus clarifications.
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="p-3 rounded border border-info mt-4" style="background: rgba(0, 242, 254, 0.03);">
+              <h6 class="text-info font-weight-bold mb-2 fs-7"><i class="fa-solid fa-circle-info me-2"></i>Daily Notice Synced</h6>
+              <p class="text-secondary mb-0 fs-8" style="line-height: 1.4;">
+                This workspace aggregates and matches postings specifically tagged with your class name (<strong class="text-info">Class <%= user.className || 'General' %></strong>). Check back daily.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

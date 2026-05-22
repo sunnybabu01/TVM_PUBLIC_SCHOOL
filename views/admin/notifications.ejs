@@ -1,0 +1,158 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Notice Board & Announcements Center</h2>
+            <p class="text-secondary mb-0">Publish newsletters, important notices, emergency closures, or instructions for students and teachers.</p>
+          </div>
+          <button class="btn btn-tvm-primary" data-bs-toggle="modal" data-bs-target="#createNoticeModal">
+            <i class="fa-solid fa-bullhorn me-2"></i>Post New Announcement
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Announcements Feed -->
+        <div class="col-xl-8">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-list-check text-info me-2"></i>Published Bulletins</h5>
+            
+            <% if (notices.length === 0) { %>
+              <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-folder-open display-4 mb-3 d-block text-secondary"></i>
+                No announcements published yet. Write your first bulletin above.
+              </div>
+            <% } else { %>
+              <div class="d-flex flex-column gap-3">
+                <% notices.forEach(notice => { %>
+                  <div class="p-3 rounded-3 border border-secondary" style="background: rgba(255, 255, 255, 0.015);">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                      <div>
+                        <h6 class="text-white font-weight-bold mb-1"><%= notice.title %></h6>
+                        <small class="text-secondary">
+                          <i class="fa-regular fa-user me-1"></i> <%= notice.createdBy %> 
+                          &nbsp;&bull;&nbsp; 
+                          <i class="fa-regular fa-calendar-days me-1"></i> <%= new Date(notice.createdAt).toLocaleString('en-IN') %>
+                        </small>
+                      </div>
+                      
+                      <% if (notice.targetRole === 'all') { %>
+                        <span class="status-badge status-present">Target: All Users</span>
+                      <% } else if (notice.targetRole === 'student') { %>
+                        <span class="status-badge status-active">Target: Students</span>
+                      <% } else if (notice.targetRole === 'teacher') { %>
+                        <span class="status-badge status-late">Target: Faculty</span>
+                      <% } else { %>
+                        <span class="status-badge status-absent">Target: Admins</span>
+                      <% } %>
+                    </div>
+                    
+                    <p class="text-secondary mb-0 fs-7 style-content-notice" style="white-space: pre-wrap; line-height: 1.5;"><%= notice.content %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Quick Tips & Targeting info -->
+        <div class="col-xl-4">
+          <div class="glass-card shadow-lg h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-shield text-warning me-2"></i>Targeted Bulletins Info</h5>
+              <p class="text-secondary mb-3 fs-7" style="line-height: 1.5;">
+                Announcements published inside this panel respect role separation:
+              </p>
+              
+              <ul class="list-unstyled d-flex flex-column gap-3 mb-0 fs-7 text-secondary">
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-users text-info mt-1"></i>
+                  <div>
+                    <strong class="text-white">All Users:</strong> Visible on Student and Teacher dashboards, as well as general outlets.
+                  </div>
+                </li>
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-chalkboard-user text-warning mt-1"></i>
+                  <div>
+                    <strong class="text-white">Faculty:</strong> Visible exclusively on teacher login portals. Highly useful for exam timetables and staff directives.
+                  </div>
+                </li>
+                <li class="d-flex gap-3 align-items-start">
+                  <i class="fa-solid fa-user-graduate text-success mt-1"></i>
+                  <div>
+                    <strong class="text-white">Students:</strong> Screened onto student panels. Can contain homework links or syllabus notices.
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="p-3 rounded border border-info mt-4" style="background: rgba(0, 242, 254, 0.03);">
+              <h6 class="text-info font-weight-bold mb-2 fs-7"><i class="fa-solid fa-circle-info me-2"></i>Email Notifications</h6>
+              <p class="text-secondary mb-0 fs-8" style="line-height: 1.4;">
+                Creating notices publishes them to the interactive dashboards instantly. Students and Teachers will see them upon their next secure login session.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Create Notice Modal -->
+<div class="modal fade" id="createNoticeModal" tabindex="-1" aria-labelledby="createNoticeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border border-secondary text-white">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title font-weight-bold" id="createNoticeModalLabel">Post New Announcement</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/notifications/create" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="glass-label">Bulletin Title</label>
+            <input type="text" name="title" class="form-control glass-input" required placeholder="e.g. Summer Vacation Holidays Schedule 2026">
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Target Audience Role</label>
+            <select name="targetRole" class="form-select glass-input">
+              <option value="all">All Users (Students & Faculty)</option>
+              <option value="student">Students & Parents Only</option>
+              <option value="teacher">Teaching Faculty Only</option>
+              <option value="admin">Administrators Only</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Announcement Content Details</label>
+            <textarea name="content" class="form-control glass-input" rows="6" required placeholder="Type the complete detailed message to be broadcasted..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Publish Announcement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

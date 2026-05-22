@@ -1,0 +1,133 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0 d-print-block">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-5 d-print-none">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Print Student ID Card</h2>
+            <p class="text-secondary mb-0">Generate your official school identification card with an offline cryptographic verification QR code.</p>
+          </div>
+          <button class="btn btn-tvm-primary" onclick="window.print()">
+            <i class="fa-solid fa-print me-2"></i>Print ID Card
+          </button>
+        </div>
+      </div>
+
+      <!-- ID Card Card Container -->
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 col-xl-4 d-flex justify-content-center">
+          
+          <!-- Sleek Professional ID Card -->
+          <div class="tvm-id-card-element border border-secondary p-4 shadow-lg text-center" style="background: linear-gradient(145deg, #0f172a 0%, #030712 100%); border-radius: 20px; width: 350px; position: relative; overflow: hidden; page-break-inside: avoid;">
+            <!-- Header banner decor -->
+            <div class="position-absolute top-0 start-0 w-100 bg-info" style="height: 10px;"></div>
+            
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-3 mt-2">
+              <i class="fa-solid fa-graduation-cap text-info fs-3"></i>
+              <div class="text-start">
+                <h6 class="text-white font-weight-bold mb-0" style="letter-spacing: 1px; font-size: 0.9rem;">TVM PUBLIC SCHOOL</h6>
+                <small class="text-secondary" style="font-size: 0.65rem;">Patna, Bihar &bull; ESTD 2026</small>
+              </div>
+            </div>
+            
+            <hr class="border-secondary mb-4 mt-2">
+
+            <!-- Avatar -->
+            <div class="mb-3">
+              <img src="<%= student.photo || '/uploads/default-avatar.png' %>" alt="Student Photo" class="rounded border border-secondary img-thumbnail" style="width: 110px; height: 110px; object-fit: cover; background: transparent;">
+            </div>
+
+            <!-- Details -->
+            <h5 class="text-white font-weight-bold mb-1" style="letter-spacing: 0.5px;"><%= student.name %></h5>
+            <p class="text-info font-weight-bold mb-3 fs-8">STUDENT IDENTIFICATION</p>
+
+            <div class="d-flex flex-column gap-2 text-start px-3 mb-4 text-secondary fs-8">
+              <div class="d-flex justify-content-between border-bottom border-secondary pb-1">
+                <span>STUDENT ID:</span>
+                <strong class="text-white"><%= student.studentId %></strong>
+              </div>
+              <div class="d-flex justify-content-between border-bottom border-secondary pb-1">
+                <span>CLASS / SECTION:</span>
+                <strong class="text-white">Class <%= student.className %> - <%= student.section %></strong>
+              </div>
+              <div class="d-flex justify-content-between border-bottom border-secondary pb-1">
+                <span>ROLL NUMBER:</span>
+                <strong class="text-white">Roll No: <%= student.rollNumber %></strong>
+              </div>
+              <div class="d-flex justify-content-between border-bottom border-secondary pb-1">
+                <span>FATHER'S NAME:</span>
+                <strong class="text-white"><%= student.fatherName || 'N/A' %></strong>
+              </div>
+            </div>
+
+            <!-- Verification QR Code generated offline -->
+            <div class="d-flex align-items-center justify-content-between px-3 bg-dark border border-secondary p-2 rounded">
+              <div class="text-start">
+                <small class="text-secondary d-block" style="font-size: 0.6rem;">SECURE ERP TOKEN</small>
+                <span class="text-success font-weight-bold" style="font-size: 0.7rem;"><i class="fa-solid fa-shield-halved me-1"></i>VERIFIED CERT</span>
+              </div>
+              <img src="<%= qrCodeDataUrl %>" alt="QR Verification Token" class="bg-white p-1 rounded" style="width: 60px; height: 60px;">
+            </div>
+            
+            <div class="mt-3">
+              <small class="text-secondary" style="font-size: 0.6rem;">Issued under the authorization of TVM Administration Patna</small>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Print-specific styles to lock ID Card format -->
+<style>
+  @media print {
+    body, html {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    .tvm-id-card-element {
+      background: #fff !important;
+      border: 2px solid #000 !important;
+      box-shadow: none !important;
+      color: #000 !important;
+      margin: 40px auto !important;
+      width: 320px !important;
+      float: none !important;
+    }
+    .tvm-id-card-element .text-white {
+      color: #000 !important;
+    }
+    .tvm-id-card-element .text-secondary,
+    .tvm-id-card-element .text-info {
+      color: #333 !important;
+    }
+    .tvm-id-card-element .border-secondary {
+      border-color: #000 !important;
+    }
+    .tvm-id-card-element .bg-dark {
+      background: #f1f5f9 !important;
+      border: 1px solid #000 !important;
+    }
+  }
+</style>
+
+<%- include('../partials/footer') %>

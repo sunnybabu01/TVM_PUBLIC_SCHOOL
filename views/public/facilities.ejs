@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<!-- Top Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-tvm sticky-top">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-tvm" href="/">
+      <i class="fa-solid fa-graduation-cap text-info me-2"></i>TVM PUBLIC SCHOOL
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#publicNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="publicNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/about">About</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm active" href="/facilities">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/faculty">Faculty</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/events">Events</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/contact">Contact</a></li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-tvm-primary px-4" href="/login"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>ERP Portal</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<section class="py-5" style="background: rgba(255, 255, 255, 0.01); border-bottom: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <h1 class="text-white font-weight-bold mb-3">Campus Infrastructure</h1>
+    <p class="text-secondary mb-0">Discover our modern classrooms, advanced scientific labs, extensive library, and sports complexes.</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      
+      <!-- Facility 1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="glass-card h-100 card-cyan shadow-lg">
+          <div class="text-center mb-4">
+            <span class="p-3 bg-info bg-opacity-10 rounded-circle border border-info border-opacity-25 d-inline-block text-info">
+              <i class="fa-solid fa-computer fs-3"></i>
+            </span>
+          </div>
+          <h5 class="text-white font-weight-bold text-center mb-3">Hi-Tech ICT Lab</h5>
+          <p class="text-secondary text-center mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+            Features modern computers, Gigabit Internet, and programming compiler suites supporting Python, C++, and Java curricula.
+          </p>
+        </div>
+      </div>
+
+      <!-- Facility 2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="glass-card h-100 card-purple shadow-lg">
+          <div class="text-center mb-4">
+            <span class="p-3 bg-warning bg-opacity-10 rounded-circle border border-warning border-opacity-25 d-inline-block text-warning">
+              <i class="fa-solid fa-flask-vial fs-3"></i>
+            </span>
+          </div>
+          <h5 class="text-white font-weight-bold text-center mb-3">Advanced Science Labs</h5>
+          <p class="text-secondary text-center mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+            Fully stocked Chemistry, Physics, and Biology testing bays with high-grade microscopes, sensors, and chemical kits.
+          </p>
+        </div>
+      </div>
+
+      <!-- Facility 3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="glass-card h-100 card-emerald shadow-lg">
+          <div class="text-center mb-4">
+            <span class="p-3 bg-success bg-opacity-10 rounded-circle border border-success border-opacity-25 d-inline-block text-success">
+              <i class="fa-solid fa-book fs-3"></i>
+            </span>
+          </div>
+          <h5 class="text-white font-weight-bold text-center mb-3">Central Library</h5>
+          <p class="text-secondary text-center mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+            Hosts over 5,000 reference volumes, academic journals, national dailies, and digital catalog checkouts.
+          </p>
+        </div>
+      </div>
+
+      <!-- Facility 4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="glass-card h-100 shadow-lg">
+          <div class="text-center mb-4">
+            <span class="p-3 bg-danger bg-opacity-10 rounded-circle border border-danger border-opacity-25 d-inline-block text-danger">
+              <i class="fa-solid fa-basketball fs-3"></i>
+            </span>
+          </div>
+          <h5 class="text-white font-weight-bold text-center mb-3">Sports Complexes</h5>
+          <p class="text-secondary text-center mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+            Equipped with synthetic basketball courts, football grass turfs, cricket pitches, and standard gymnastics equipment.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5" style="border-top: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <p class="text-secondary mb-0" style="font-size: 0.8rem;">&copy; 2026 TVM Public School Patna. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<%- include('../partials/footer') %>

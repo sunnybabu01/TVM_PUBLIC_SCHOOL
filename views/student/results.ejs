@@ -1,0 +1,131 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">My Quiz Reports & Academic Grades</h2>
+          <p class="text-secondary mb-0">View scored quiz percentages, letter grade mappings, and teacher remarks.</p>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-4">
+        <!-- Exams Taken -->
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-cyan text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">QUIZZES / EXAMS TAKEN</span>
+            <h3 class="text-white display-6 font-weight-black mb-0"><%= results.length %></h3>
+          </div>
+        </div>
+        
+        <!-- Cumulative GPA/Percentage -->
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-emerald text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">AVERAGE SCORE</span>
+            <% 
+              let avgScore = 0;
+              if (results.length > 0) {
+                const totalObtained = results.reduce((acc, curr) => acc + curr.marksObtained, 0);
+                const totalMax = results.reduce((acc, curr) => acc + curr.totalMarks, 0);
+                avgScore = ((totalObtained / totalMax) * 100).toFixed(1);
+              }
+            %>
+            <h3 class="text-white display-6 font-weight-black mb-0"><%= results.length > 0 ? avgScore : '100.0' %>%</h3>
+          </div>
+        </div>
+
+        <!-- Highest Grade -->
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-purple text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">ACADEMIC LEVEL</span>
+            <%
+              let level = 'Excellent';
+              if (results.length > 0) {
+                const failing = results.filter(r => r.grade === 'F');
+                if (failing.length > 0) level = 'Needs Improvement';
+                else if (avgScore >= 90) level = 'Outstanding (A+)';
+                else if (avgScore >= 80) level = 'Very Good (A)';
+                else level = 'Good (B)';
+              }
+            %>
+            <h3 class="text-white display-6 font-weight-black mb-0" style="font-size: 1.6rem;"><%= results.length > 0 ? level : 'Outstanding' %></h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4">
+              <i class="fa-solid fa-square-poll-vertical text-info me-2"></i>Official Subject Grade Reports
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Exam Title</th>
+                    <th>Subject</th>
+                    <th>Date Released</th>
+                    <th>Marks Scored</th>
+                    <th>Percentage Score</th>
+                    <th>Letter Grade</th>
+                    <th>Teacher Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (results.length === 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center py-4 text-muted">No academic results released by faculty yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% results.forEach(result => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= result.examId ? result.examId.title : 'General Academic Exam' %></td>
+                        <td><span class="badge bg-secondary"><%= result.subject %></span></td>
+                        <td><%= new Date(result.createdAt).toLocaleDateString('en-IN') %></td>
+                        <td class="text-white font-weight-bold"><%= result.marksObtained %> / <%= result.totalMarks %></td>
+                        <td>
+                          <% const pct = ((result.marksObtained / result.totalMarks) * 100).toFixed(1) %>
+                          <span class="font-weight-bold <%= pct >= 80 ? 'text-success' : (pct >= 40 ? 'text-info' : 'text-danger') %>">
+                            <%= pct %>%
+                          </span>
+                        </td>
+                        <td>
+                          <span class="status-badge <%= ['A+', 'A', 'B'].includes(result.grade) ? 'status-present' : (result.grade === 'F' ? 'status-absent' : 'status-late') %>">
+                            Grade <%= result.grade || 'B' %>
+                          </span>
+                        </td>
+                        <td class="text-secondary italic">"<%= result.remarks || 'No remarks recorded.' %>"</td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

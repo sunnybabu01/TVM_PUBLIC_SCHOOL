@@ -1,0 +1,646 @@
+/* 
+  =========================================
+  TVM SCHOOL ERP SYSTEM - CORE DESIGN SHEET
+  =========================================
+  Theme: Tech-Forward Glassmorphism (Dark/Neon hybrid)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg-core: #090D1A;
+  --bg-slate: #0F172A;
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-card: rgba(15, 23, 42, 0.65);
+  --border-glass: rgba(255, 255, 255, 0.07);
+  --border-glow: rgba(0, 242, 254, 0.15);
+  
+  --accent-cyan: #00F2FE;
+  --accent-purple: #7F00FF;
+  --accent-glow: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
+  --accent-sunset: linear-gradient(135deg, #FF0844 0%, #FFB199 100%);
+  --accent-emerald: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%);
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  
+  --shadow-glow: 0 8px 32px 0 rgba(0, 242, 254, 0.08);
+  --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 1. Global Reset & Base Elements */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-glass) var(--bg-core);
+}
+
+body {
+  background-color: var(--bg-core);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(127, 0, 255, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.08) 0%, transparent 40%);
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-core);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* 2. Public Layout Styles */
+.navbar-tvm {
+  background: rgba(9, 13, 26, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+  padding: 15px 0;
+}
+.navbar-brand-tvm {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  background: var(--accent-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nav-link-tvm {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin: 0 10px;
+}
+.nav-link-tvm:hover, .nav-link-tvm.active {
+  color: var(--accent-cyan) !important;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+/* 3. Glassmorphism Card System */
+.glass-card {
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  transition: background 0.4s ease;
+}
+.glass-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow);
+}
+.glass-card:hover::before {
+  background: var(--accent-glow);
+}
+
+/* Theme gradients for cards */
+.card-cyan::before { background: var(--accent-glow); }
+.card-purple::before { background: var(--accent-sunset); }
+.card-emerald::before { background: var(--accent-emerald); }
+
+/* 4. Sleek Form Elements */
+.glass-input {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--border-glass) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  transition: all 0.3s ease !important;
+}
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2) !important;
+  outline: none;
+}
+.glass-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* 5. Animated Buttons */
+.btn-tvm-primary {
+  background: var(--accent-glow);
+  border: none;
+  color: #090D1A !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+}
+.btn-tvm-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+}
+
+.btn-tvm-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.btn-tvm-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-cyan);
+}
+
+.btn-tvm-danger {
+  background: var(--accent-sunset);
+  border: none;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.btn-tvm-danger:hover {
+  box-shadow: 0 4px 15px rgba(255, 8, 68, 0.4);
+}
+
+/* 6. Shared Layout - Dashboards (Sidebar + Content) */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-tvm {
+  width: 260px;
+  background: #090D1A;
+  border-right: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+.sidebar-header {
+  padding: 30px 24px;
+  border-bottom: 1px solid var(--border-glass);
+}
+.sidebar-logo {
+  font-weight: 800;
+  font-size: 1.3rem;
+  background: var(--accent-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-menu {
+  flex: 1;
+  padding: 24px 12px;
+  list-style: none;
+  overflow-y: auto;
+}
+.sidebar-item {
+  margin-bottom: 8px;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.sidebar-link i {
+  font-size: 1.15rem;
+}
+.sidebar-link:hover, .sidebar-link.active {
+  color: var(--text-primary);
+  background: rgba(0, 242, 254, 0.08);
+  box-shadow: inset 3px 0 0 var(--accent-cyan);
+}
+
+.main-content-tvm {
+  flex: 1;
+  margin-left: 260px;
+  padding: 40px;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+.top-bar-tvm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+/* 7. Data Display Tables */
+.tvm-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.tvm-table th {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 2px solid var(--border-glass);
+}
+.tvm-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.tvm-table tr {
+  transition: background 0.2s ease;
+}
+.tvm-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-present { background: rgba(56, 249, 215, 0.15); color: #38F9D7; }
+.status-absent { background: rgba(255, 8, 68, 0.15); color: #FF0844; }
+.status-late { background: rgba(255, 177, 153, 0.15); color: #FFB199; }
+.status-active { background: rgba(56, 249, 215, 0.15); color: #38F9D7; }
+.status-inactive { background: rgba(255, 8, 68, 0.15); color: #FF0844; }
+
+/* 8. Modern Mobile Responsiveness */
+@media (max-width: 991px) {
+  .sidebar-tvm {
+    transform: translateX(-100%);
+  }
+  .sidebar-tvm.show {
+    transform: translateX(0);
+  }
+  .main-content-tvm {
+    margin-left: 0;
+    padding: 20px;
+  }
+  .top-bar-tvm {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+
+/* 9. Premium Login Page Styles */
+.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+.ambient-bubble {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+  opacity: 0.15;
+  animation: floatBubble 12s infinite alternate;
+}
+.bubble-1 {
+  background: var(--accent-cyan);
+  top: -10%;
+  left: -10%;
+}
+.bubble-2 {
+  background: var(--accent-purple);
+  bottom: -10%;
+  right: -10%;
+}
+
+@keyframes floatBubble {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(50px) scale(1.1); }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+}
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.login-title {
+  font-weight: 800;
+  font-size: 1.8rem;
+  background: var(--accent-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 10. Print Mode Layout overrides */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .sidebar-tvm, .top-bar-tvm, .navbar-tvm, .btn, .btn-tvm-primary, .btn-tvm-secondary, footer {
+    display: none !important;
+  }
+  .main-content-tvm {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  .glass-card {
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    backdrop-filter: none !important;
+    page-break-inside: avoid;
+  }
+  .tvm-table th {
+    background: #f1f5f9 !important;
+    border-bottom: 2px solid #000 !important;
+    color: #000 !important;
+  }
+  .tvm-table td {
+    border-bottom: 1px solid #ddd !important;
+    color: #000 !important;
+  }
+}
+
+/* 11. Global Floating Theme Toggle Button */
+.floating-theme-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50% !important;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border-glass) !important;
+  color: var(--accent-cyan) !important;
+  font-size: 1.35rem !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.floating-theme-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+}
+
+/* Light Theme Variable Configurations & Overrides */
+:root.light-mode {
+  --bg-core: #F1F5F9;
+  --bg-slate: #FFFFFF;
+  --bg-glass: rgba(0, 0, 0, 0.02);
+  --bg-glass-card: rgba(255, 255, 255, 0.82);
+  --border-glass: rgba(15, 23, 42, 0.08);
+  --border-glow: rgba(79, 70, 229, 0.15);
+  
+  --accent-cyan: #4F46E5; /* Tech Indigo accent for Light Mode */
+  --accent-purple: #7C3AED;
+  --accent-glow: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+  --accent-sunset: linear-gradient(135deg, #EF4444 0%, #F59E0B 100%);
+  --accent-emerald: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  
+  --shadow-glow: 0 8px 32px 0 rgba(79, 70, 229, 0.08);
+  --shadow-card: 0 12px 40px rgba(15, 23, 42, 0.06);
+}
+
+:root.light-mode body {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 40%) !important;
+}
+
+:root.light-mode .navbar-tvm {
+  background: rgba(248, 250, 252, 0.85) !important;
+}
+
+:root.light-mode .sidebar-tvm {
+  background: #FFFFFF !important;
+}
+
+:root.light-mode .ambient-bubble {
+  opacity: 0.06 !important;
+}
+
+:root.light-mode .floating-theme-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #4F46E5 !important;
+  box-shadow: 0 8px 32px 0 rgba(79, 70, 229, 0.1);
+  border-color: rgba(79, 70, 229, 0.1) !important;
+}
+:root.light-mode .floating-theme-btn:hover {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.3) !important;
+}
+
+/* Light Mode typography compatibility overrides */
+:root.light-mode .text-white,
+:root.light-mode h1.text-white,
+:root.light-mode h2.text-white,
+:root.light-mode h3.text-white,
+:root.light-mode h4.text-white,
+:root.light-mode h5.text-white,
+:root.light-mode h6.text-white,
+:root.light-mode .display-6,
+:root.light-mode .sidebar-logo,
+:root.light-mode .top-bar-tvm .text-white,
+:root.light-mode .navbar-brand-tvm,
+:root.light-mode .navbar-tvm .navbar-brand,
+:root.light-mode .sidebar-link:hover,
+:root.light-mode .sidebar-link.active,
+:root.light-mode .nav-link-tvm:hover,
+:root.light-mode .nav-link-tvm.active {
+  color: var(--text-primary) !important;
+}
+
+:root.light-mode .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+:root.light-mode .text-muted {
+  color: var(--text-muted) !important;
+}
+
+:root.light-mode .glass-input {
+  background: rgba(15, 23, 42, 0.04) !important;
+  color: var(--text-primary) !important;
+}
+:root.light-mode .glass-input:focus {
+  background: rgba(15, 23, 42, 0.06) !important;
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.2) !important;
+}
+
+:root.light-mode .dropdown-menu {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+:root.light-mode .dropdown-item {
+  color: var(--text-primary) !important;
+}
+:root.light-mode .dropdown-item:hover {
+  background: rgba(79, 70, 229, 0.06) !important;
+}
+
+:root.light-mode .btn-tvm-primary {
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+}
+:root.light-mode .btn-tvm-primary:hover {
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+/* Custom premium animations & visual enhancements */
+.gradient-text {
+  background: var(--accent-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.text-gradient-purple {
+  background: var(--accent-sunset);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+.hover-glow-card {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.hover-glow-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 15px 30px rgba(0, 242, 254, 0.15);
+}
+
+:root.light-mode .hover-glow-card:hover {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 15px 30px rgba(79, 70, 229, 0.15);
+}
+
+.carousel-glowing-frame {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.carousel-glowing-frame:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow);
+}
+
+:root.light-mode .carousel-glowing-frame:hover {
+  border-color: #4F46E5;
+  box-shadow: 0 8px 32px 0 rgba(79, 70, 229, 0.15);
+}
+
+.carousel-caption-glass {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid var(--border-glass);
+  padding: 15px !important;
+  bottom: 20px !important;
+  left: 5% !important;
+  right: 5% !important;
+}
+
+:root.light-mode .carousel-caption-glass {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
+}
+
+:root.light-mode .carousel-caption-glass h5 {
+  color: var(--text-primary) !important;
+}
+:root.light-mode .carousel-caption-glass p {
+  color: var(--text-secondary) !important;
+}
+

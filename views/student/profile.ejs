@@ -1,0 +1,202 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">Student Demographics Profile</h2>
+          <p class="text-secondary mb-0">Manage your profile photo, security credentials, and view registered academic details.</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Avatar card -->
+        <div class="col-lg-4">
+          <div class="glass-card shadow-lg text-center h-100 d-flex flex-column justify-content-center py-5">
+            <form action="/student/profile/update" method="POST" enctype="multipart/form-data" id="avatar-form">
+              <div class="mb-4 position-relative d-inline-block mx-auto">
+                <img src="<%= student.photo || '/uploads/default-avatar.png' %>" alt="Student Photo" id="profile-avatar-preview" class="rounded-circle border border-info img-thumbnail" style="width: 150px; height: 150px; object-fit: cover; background: transparent;">
+                <label for="photo-upload" class="position-absolute bottom-0 end-0 bg-info text-dark rounded-circle border border-dark p-2 cursor-pointer shadow-lg hover-scale" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" name="photo" id="photo-upload" accept="image/png, image/jpeg, image/jpg" class="d-none">
+              </div>
+              <h4 class="text-white font-weight-bold mb-1"><%= student.name %></h4>
+              <p class="text-info font-weight-bold mb-3"><%= student.studentId %></p>
+              <div class="mb-4">
+                <span class="status-badge status-present">
+                  <i class="fa-solid fa-circle-check me-1"></i><%= student.status.toUpperCase() %> ERP ACCOUNT
+                </span>
+              </div>
+              <p class="text-muted fs-8 px-3">Click the camera icon to select a new profile photo. Max file size: 2MB.</p>
+              <button type="submit" class="btn btn-tvm-primary btn-sm px-4 mt-2 d-none" id="save-avatar-btn">
+                <i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Photo
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Details card -->
+        <div class="col-lg-8">
+          <div class="d-flex flex-column gap-4">
+            
+            <!-- Locked Dossier Card -->
+            <div class="glass-card shadow-lg">
+              <h5 class="text-white font-weight-bold mb-4 border-bottom border-secondary pb-3">
+                <i class="fa-solid fa-id-card text-info me-2"></i>Official Registration Dossier
+              </h5>
+              
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">FULL STUDENT NAME</small>
+                  <span class="text-white font-weight-bold fs-6"><%= student.name %></span>
+                </div>
+                
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">STUDENT ID</small>
+                  <span class="text-white font-weight-bold fs-6"><%= student.studentId %></span>
+                </div>
+
+                <div class="col-md-4">
+                  <small class="text-secondary font-weight-bold d-block mb-1">REGISTERED ACADEMIC CLASS</small>
+                  <span class="text-white font-weight-bold fs-6">Class <%= student.className %></span>
+                </div>
+
+                <div class="col-md-4">
+                  <small class="text-secondary font-weight-bold d-block mb-1">CLASSROOM SECTION</small>
+                  <span class="text-white font-weight-bold fs-6">Section <%= student.section %></span>
+                </div>
+
+                <div class="col-md-4">
+                  <small class="text-secondary font-weight-bold d-block mb-1">ROLL NUMBER</small>
+                  <span class="text-white font-weight-bold fs-6">Roll No: <%= student.rollNumber %></span>
+                </div>
+
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">PARENT/GUARDIAN'S NAME</small>
+                  <span class="text-white font-weight-bold fs-6"><%= student.fatherName || 'Not Recorded' %></span>
+                </div>
+
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">ERP SIGNUP SYSTEM ROLE</small>
+                  <span class="text-white font-weight-bold fs-6"><%= student.role.toUpperCase() %> ACCESS</span>
+                </div>
+
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">INSTITUTION</small>
+                  <span class="text-white font-weight-bold fs-6">TVM Public School, Patna</span>
+                </div>
+
+                <div class="col-md-6">
+                  <small class="text-secondary font-weight-bold d-block mb-1">SYSTEM SINCE</small>
+                  <span class="text-white font-weight-bold fs-6"><%= new Date(student.createdAt).toLocaleDateString('en-IN') %></span>
+                </div>
+              </div>
+
+              <div class="p-3 rounded border border-secondary mt-4" style="background: rgba(255, 255, 255, 0.015);">
+                <h6 class="text-secondary font-weight-bold mb-2 fs-7"><i class="fa-solid fa-circle-info me-2"></i>Institutional Data Privacy</h6>
+                <p class="text-muted mb-0 fs-8" style="line-height: 1.4;">
+                  Student registration records are officially locked down. If you find any data error in name, roll number, or class details, please contact the TVM Administrative Desk.
+                </p>
+              </div>
+            </div>
+
+            <!-- Editable Settings Card -->
+            <div class="glass-card shadow-lg">
+              <h5 class="text-white font-weight-bold mb-4 border-bottom border-secondary pb-3">
+                <i class="fa-solid fa-user-gear text-info me-2"></i>Profile & Security Settings
+              </h5>
+              
+              <form action="/student/profile/update" method="POST" class="needs-validation">
+                <div class="row g-4">
+                  <!-- Email field -->
+                  <div class="col-md-12">
+                    <label for="email" class="form-label text-secondary font-weight-bold fs-8">EMAIL ADDRESS</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-regular fa-envelope"></i></span>
+                      <input type="email" name="email" id="email" class="form-control bg-dark border-secondary text-white font-weight-bold" value="<%= student.email %>" required>
+                    </div>
+                    <small class="text-muted mt-1 d-block">Used for login, notifications, and OTP verification codes.</small>
+                  </div>
+                  
+                  <!-- Separator -->
+                  <div class="col-12 mt-4 mb-2">
+                    <h6 class="text-white font-weight-bold fs-7"><i class="fa-solid fa-key me-2 text-warning"></i>Change Password</h6>
+                    <small class="text-muted d-block mb-3">Leave blank if you do not wish to change your current account password.</small>
+                  </div>
+
+                  <!-- Passwords -->
+                  <div class="col-md-6">
+                    <label for="password" class="form-label text-secondary font-weight-bold fs-8">NEW PASSWORD</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-lock"></i></span>
+                      <input type="password" name="password" id="password" class="form-control bg-dark border-secondary text-white" placeholder="Enter new password">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="confirmPassword" class="form-label text-secondary font-weight-bold fs-8">CONFIRM NEW PASSWORD</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-lock-open"></i></span>
+                      <input type="password" name="confirmPassword" id="confirmPassword" class="form-control bg-dark border-secondary text-white" placeholder="Repeat new password">
+                    </div>
+                  </div>
+
+                  <!-- Save Button -->
+                  <div class="col-12 text-end mt-4">
+                    <button type="submit" class="btn btn-tvm-primary px-4 py-2 font-weight-bold">
+                      <i class="fa-solid fa-floppy-disk me-2"></i>Save Settings
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Client-side real-time preview script -->
+<script>
+  document.getElementById('photo-upload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file size (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('File size exceeds 2MB limit! Please select a smaller photo.');
+        event.target.value = '';
+        return;
+      }
+      
+      // Update image preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('profile-avatar-preview').src = e.target.result;
+        // Show the save button
+        document.getElementById('save-avatar-btn').classList.remove('d-none');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

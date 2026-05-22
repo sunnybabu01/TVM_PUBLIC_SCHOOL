@@ -1,0 +1,152 @@
+<aside class="sidebar-tvm">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fa-solid fa-graduation-cap text-info"></i>
+      <span>TVM Public</span>
+    </div>
+  </div>
+  
+  <ul class="sidebar-menu">
+    <!-- ADMIN SIDEBAR CONTROLS -->
+    <% if (user.role === 'admin') { %>
+      <li class="sidebar-item">
+        <a href="/admin/dashboard" class="sidebar-link <%= title.includes('Admin Dashboard') ? 'active' : '' %>">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/students" class="sidebar-link <%= title.includes('Students') ? 'active' : '' %>">
+          <i class="fa-solid fa-user-graduate"></i> Manage Students
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/teachers" class="sidebar-link <%= title.includes('Teachers') ? 'active' : '' %>">
+          <i class="fa-solid fa-chalkboard-user"></i> Manage Faculty
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/attendance" class="sidebar-link <%= title.includes('Attendance') ? 'active' : '' %>">
+          <i class="fa-solid fa-clipboard-user"></i> Attendance Reports
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/fees" class="sidebar-link <%= title.includes('Fees') || title.includes('Fee') ? 'active' : '' %>">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Fee Invoices
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/library" class="sidebar-link <%= title.includes('Library') ? 'active' : '' %>">
+          <i class="fa-solid fa-book-bookmark"></i> Library Logs
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/inventory" class="sidebar-link <%= title.includes('Inventory') ? 'active' : '' %>">
+          <i class="fa-solid fa-warehouse"></i> Lab Assets
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/notifications" class="sidebar-link <%= title.includes('Announcements') ? 'active' : '' %>">
+          <i class="fa-solid fa-bullhorn"></i> Notice Board
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/admin/profile" class="sidebar-link <%= title.includes('My Profile') ? 'active' : '' %>">
+          <i class="fa-solid fa-user-astronaut"></i> My Profile
+        </a>
+      </li>
+      
+    <!-- TEACHER SIDEBAR CONTROLS -->
+    <% } else if (user.role === 'teacher') { %>
+      <li class="sidebar-item">
+        <a href="/teacher/dashboard" class="sidebar-link <%= title.includes('Teacher Dashboard') ? 'active' : '' %>">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/teacher/attendance" class="sidebar-link <%= title.includes('Attendance') ? 'active' : '' %>">
+          <i class="fa-solid fa-clipboard-user"></i> Mark Attendance
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/teacher/exams" class="sidebar-link <%= title.includes('Exams') ? 'active' : '' %>">
+          <i class="fa-solid fa-file-signature"></i> Create Quizzes
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/teacher/marks" class="sidebar-link <%= title.includes('Marks') || title.includes('Results') ? 'active' : '' %>">
+          <i class="fa-solid fa-square-poll-vertical"></i> Record Grades
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/teacher/homework" class="sidebar-link <%= title.includes('Homework') ? 'active' : '' %>">
+          <i class="fa-solid fa-book-open"></i> Upload Homework
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/teacher/profile" class="sidebar-link <%= title.includes('My Profile') ? 'active' : '' %>">
+          <i class="fa-solid fa-user-astronaut"></i> My Profile
+        </a>
+      </li>
+
+    <!-- STUDENT SIDEBAR CONTROLS -->
+    <% } else if (user.role === 'student') { %>
+      <li class="sidebar-item">
+        <a href="/student/dashboard" class="sidebar-link <%= title.includes('Student Dashboard') ? 'active' : '' %>">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/profile" class="sidebar-link <%= title.includes('My Profile') ? 'active' : '' %>">
+          <i class="fa-solid fa-user-astronaut"></i> My Profile
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/attendance" class="sidebar-link <%= title.includes('Attendance') ? 'active' : '' %>">
+          <i class="fa-solid fa-calendar-days"></i> My Attendance
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/results" class="sidebar-link <%= title.includes('Results') ? 'active' : '' %>">
+          <i class="fa-solid fa-award"></i> Quiz Reports
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/id-card" class="sidebar-link <%= title.includes('ID Card') ? 'active' : '' %>">
+          <i class="fa-solid fa-id-card"></i> Student ID Card
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/admit-card" class="sidebar-link <%= title.includes('Admit Card') ? 'active' : '' %>">
+          <i class="fa-solid fa-ticket"></i> Exam Admit Card
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/homework" class="sidebar-link <%= title.includes('Homework') ? 'active' : '' %>">
+          <i class="fa-solid fa-book-open-reader"></i> Homework Board
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/fee-payment" class="sidebar-link <%= title.includes('Fees') || title.includes('Receipt') ? 'active' : '' %>">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Invoice Desk
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="/student/notifications" class="sidebar-link <%= title.includes('Alerts') ? 'active' : '' %>">
+          <i class="fa-solid fa-bell"></i> Alerts & Notices
+        </a>
+      </li>
+    <% } %>
+    
+    <!-- GENERAL OUTLET -->
+    <li class="sidebar-item border-top border-secondary mt-4 pt-3">
+      <a href="/" class="sidebar-link text-info">
+        <i class="fa-solid fa-house-chimney"></i> Public Website
+      </a>
+    </li>
+    <li class="sidebar-item">
+      <a href="/logout" class="sidebar-link text-danger">
+        <i class="fa-solid fa-power-off"></i> Log Out
+      </a>
+    </li>
+  </ul>
+</aside>

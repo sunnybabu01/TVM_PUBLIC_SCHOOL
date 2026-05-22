@@ -1,0 +1,287 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Online Exams & Quizzes</h2>
+            <p class="text-secondary mb-0">Schedule upcoming subject quizzes, compile multiple choice question cards, and manage timings.</p>
+          </div>
+          <button class="btn btn-tvm-primary" data-bs-toggle="modal" data-bs-target="#createExamModal">
+            <i class="fa-solid fa-plus me-2"></i>Create Subject MCQ Quiz
+          </button>
+        </div>
+      </div>
+
+      <!-- Exams catalog list -->
+      <div class="row">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4">
+              <i class="fa-solid fa-file-signature text-info me-2"></i>My Scheduled Quizzes: <%= subject %>
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Exam Title</th>
+                    <th>Target Class</th>
+                    <th>Subject Dept</th>
+                    <th>Exam Date</th>
+                    <th>Duration (Mins)</th>
+                    <th>Questions Count</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (exams.length === 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center py-4 text-muted">No online quizzes scheduled yet. Create your first exam.</td>
+                    </tr>
+                  <% } else { %>
+                    <% exams.forEach(exam => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= exam.title %></td>
+                        <td>Class <%= exam.className %></td>
+                        <td><span class="badge bg-secondary"><%= exam.subject %></span></td>
+                        <td><%= new Date(exam.examDate).toLocaleDateString('en-IN') %> &bull; <%= new Date(exam.examDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) %></td>
+                        <td><%= exam.durationMinutes %> Minutes</td>
+                        <td><span class="status-badge status-present"><%= exam.questions.length %> MCQs</span></td>
+                        <td>
+                          <button class="btn btn-tvm-secondary py-1 px-3 fs-7" onclick="toggleQuizQuestions('<%= exam._id %>')">
+                            <i class="fa-solid fa-list-check me-1"></i> View MCQs
+                          </button>
+                        </td>
+                      </tr>
+                      <!-- Nested display for MCQs -->
+                      <tr id="quiz-log-<%= exam._id %>" style="display: none; background: rgba(0, 0, 0, 0.25);">
+                        <td colspan="7" class="p-3">
+                          <div class="px-4 py-3 border-start border-3 border-info">
+                            <h6 class="text-white font-weight-bold mb-3">MCQ Question Sheet for "<%= exam.title %>"</h6>
+                            <ol class="list-unstyled mb-0 d-flex flex-column gap-3">
+                              <% exam.questions.forEach((q, idx) => { %>
+                                <li class="p-3 rounded bg-dark border border-secondary">
+                                  <strong class="text-white d-block mb-2">Q<%= idx + 1 %>: <%= q.questionText %></strong>
+                                  <div class="row g-2">
+                                    <% q.options.forEach((opt, oIdx) => { %>
+                                      <div class="col-md-6 fs-8 <%= oIdx === q.correctOptionIndex ? 'text-success font-weight-bold' : 'text-secondary' %>">
+                                        <i class="fa-solid <%= oIdx === q.correctOptionIndex ? 'fa-square-check' : 'fa-square' %> me-2"></i>
+                                        Option <%= oIdx + 1 %>: <%= opt %>
+                                      </div>
+                                    <% }) %>
+                                  </div>
+                                </li>
+                              <% }) %>
+                            </ol>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Create MCQ Quiz Modal -->
+<div class="modal fade" id="createExamModal" tabindex="-1" aria-labelledby="createExamModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content bg-dark border border-secondary text-white">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title font-weight-bold" id="createExamModalLabel">Construct & Schedule Online Quiz</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="createQuizForm" action="/teacher/exams/create" method="POST" onsubmit="return compileQuestions()">
+        <div class="modal-body">
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="glass-label">Quiz Title</label>
+              <input type="text" name="title" class="form-control glass-input" required placeholder="e.g. Chapter 3 Mechanics Test">
+            </div>
+            <div class="col-md-3">
+              <label class="glass-label">Target Class</label>
+              <select name="className" class="form-select glass-input" required>
+                <option value="1">Class 1</option>
+                <option value="2">Class 2</option>
+                <option value="3">Class 3</option>
+                <option value="4">Class 4</option>
+                <option value="5">Class 5</option>
+                <option value="6">Class 6</option>
+                <option value="7">Class 7</option>
+                <option value="8">Class 8</option>
+                <option value="9" selected>Class 9</option>
+                <option value="10">Class 10</option>
+                <option value="11">Class 11</option>
+                <option value="12">Class 12</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="glass-label">Subject</label>
+              <input type="text" name="subject" class="form-control glass-input bg-dark" readonly value="<%= subject %>">
+            </div>
+            <div class="col-md-6">
+              <label class="glass-label">Exam Timings</label>
+              <input type="datetime-local" name="examDate" class="form-control glass-input" required>
+            </div>
+            <div class="col-md-6">
+              <label class="glass-label">Duration (Minutes)</label>
+              <input type="number" name="durationMinutes" class="form-control glass-input" required min="10" value="60">
+            </div>
+          </div>
+
+          <hr class="border-secondary mb-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="text-white font-weight-bold mb-0">Assemble Multiple Choice Questions (MCQs)</h6>
+            <button type="button" class="btn btn-sm btn-tvm-primary" onclick="addQuestionCard()">
+              <i class="fa-solid fa-plus me-1"></i>Add Question Card
+            </button>
+          </div>
+
+          <!-- Dynamic Questions Card Container -->
+          <div id="questionsContainer" class="d-flex flex-column gap-4">
+            <!-- Questions injected here -->
+          </div>
+
+          <!-- Hidden Input for questions JSON compile -->
+          <input type="hidden" name="questions" id="questionsJsonField">
+
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Publish & Schedule Quiz</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  let questionCount = 0;
+
+  function toggleQuizQuestions(examId) {
+    const row = document.getElementById('quiz-log-' + examId);
+    if (row.style.display === 'none') {
+      row.style.display = 'table-row';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+
+  function addQuestionCard() {
+    questionCount++;
+    const container = document.getElementById('questionsContainer');
+    
+    const card = document.createElement('div');
+    card.className = 'p-3 rounded border border-secondary question-card';
+    card.id = `q-card-${questionCount}`;
+    card.style.background = 'rgba(255, 255, 255, 0.01)';
+    
+    card.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-info font-weight-bold">Question Card #${questionCount}</span>
+        <button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="removeQuestionCard(${questionCount})">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+      <div class="mb-3">
+        <label class="glass-label fs-8">Question Text</label>
+        <textarea class="form-control glass-input q-text" rows="2" required placeholder="Type multiple choice question statement..."></textarea>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="glass-label fs-8">Option 1</label>
+          <input type="text" class="form-control glass-input q-opt-0" required placeholder="Option 1">
+        </div>
+        <div class="col-md-6">
+          <label class="glass-label fs-8">Option 2</label>
+          <input type="text" class="form-control glass-input q-opt-1" required placeholder="Option 2">
+        </div>
+        <div class="col-md-6">
+          <label class="glass-label fs-8">Option 3</label>
+          <input type="text" class="form-control glass-input q-opt-2" required placeholder="Option 3">
+        </div>
+        <div class="col-md-6">
+          <label class="glass-label fs-8">Option 4</label>
+          <input type="text" class="form-control glass-input q-opt-3" required placeholder="Option 4">
+        </div>
+      </div>
+      <div>
+        <label class="glass-label fs-8">Select Correct Option Answer</label>
+        <select class="form-select glass-input q-correct" required>
+          <option value="0">Option 1</option>
+          <option value="1">Option 2</option>
+          <option value="2">Option 3</option>
+          <option value="3">Option 4</option>
+        </select>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  }
+
+  function removeQuestionCard(id) {
+    const card = document.getElementById(`q-card-${id}`);
+    if (card) {
+      card.remove();
+    }
+  }
+
+  function compileQuestions() {
+    const cards = document.querySelectorAll('.question-card');
+    if (cards.length === 0) {
+      alert('Error: You must add at least one question card to compile this exam.');
+      return false;
+    }
+    
+    const questionsArray = [];
+    
+    cards.forEach(card => {
+      const questionText = card.querySelector('.q-text').value;
+      const opt0 = card.querySelector('.q-opt-0').value;
+      const opt1 = card.querySelector('.q-opt-1').value;
+      const opt2 = card.querySelector('.q-opt-2').value;
+      const opt3 = card.querySelector('.q-opt-3').value;
+      const correctOptionIndex = parseInt(card.querySelector('.q-correct').value);
+      
+      questionsArray.push({
+        questionText,
+        options: [opt0, opt1, opt2, opt3],
+        correctOptionIndex
+      });
+    });
+    
+    document.getElementById('questionsJsonField').value = JSON.stringify(questionsArray);
+    return true;
+  }
+
+  // Load first question card automatically
+  document.addEventListener('DOMContentLoaded', () => {
+    addQuestionCard();
+  });
+</script>
+
+<%- include('../partials/footer') %>

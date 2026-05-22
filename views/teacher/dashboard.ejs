@@ -1,0 +1,165 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg border border-secondary" style="background: linear-gradient(135deg, rgba(31,41,55,0.4) 0%, rgba(15,23,42,0.6) 100%);">
+            <h2 class="text-white font-weight-bold mb-1">Welcome, <%= teacher.name %></h2>
+            <p class="text-secondary mb-0">Faculty Portal &bull; Department of <%= teacher.subject %>. Manage your class attendance, quizzes, and gradebooks.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-5">
+        <!-- Students -->
+        <div class="col-md-6 col-xl-4">
+          <div class="glass-card h-100 card-cyan shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">TOTAL SCHOOL STUDENTS</span>
+              <i class="fa-solid fa-users text-info fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.students %></h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-circle-check me-1"></i>Active accounts</span>
+          </div>
+        </div>
+        
+        <!-- Scheduled Exams -->
+        <div class="col-md-6 col-xl-4">
+          <div class="glass-card h-100 card-purple shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">MY EXAMS SCHEDULER</span>
+              <i class="fa-solid fa-file-signature text-warning fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.exams %></h3>
+            <span class="text-info font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-graduation-cap me-1"></i>MCQs / Tests assigned</span>
+          </div>
+        </div>
+
+        <!-- Subject Specialized -->
+        <div class="col-md-12 col-xl-4">
+          <div class="glass-card h-100 card-emerald shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">MY ACADEMICS CORE</span>
+              <i class="fa-solid fa-book-journal-whills text-success fs-4"></i>
+            </div>
+            <h3 class="text-white h4 font-weight-bold mb-1">Subject: <%= teacher.subject %></h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-user-tie me-1"></i>TVM Faculty Department</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Controls and Upcoming Exams -->
+      <div class="row g-4 mb-5">
+        <!-- Upcoming Exams -->
+        <div class="col-12 col-xl-8">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-clock text-info me-2"></i>My Scheduled Exams & Quizzes</h5>
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Exam Title</th>
+                    <th>Class</th>
+                    <th>Date Scheduled</th>
+                    <th>Duration</th>
+                    <th>Questions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (upcomingExams.length === 0) { %>
+                    <tr>
+                      <td colspan="5" class="text-center py-4 text-muted">No upcoming exams scheduled for <%= teacher.subject %>.</td>
+                    </tr>
+                  <% } else { %>
+                    <% upcomingExams.forEach(exam => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= exam.title %></td>
+                        <td>Class <%= exam.className %></td>
+                        <td><%= new Date(exam.examDate).toLocaleDateString('en-IN') %> &bull; <%= new Date(exam.examDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) %></td>
+                        <td><%= exam.durationMinutes %> Min</td>
+                        <td><span class="badge bg-secondary"><%= exam.questions.length %> MCQs</span></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Quick Controls -->
+        <div class="col-12 col-xl-4">
+          <div class="glass-card shadow-lg h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="text-white font-weight-bold mb-3">Quick Classroom Actions</h5>
+              <p class="text-secondary mb-4" style="font-size: 0.9rem;">Jump to attendance registers, results uploading, or class assignments immediately.</p>
+            </div>
+            <div class="d-grid gap-3">
+              <a href="/teacher/attendance" class="btn btn-tvm-primary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-clipboard-user me-2"></i>Mark Daily Attendance</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </a>
+              <a href="/teacher/exams" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-calendar-plus me-2"></i>Schedule MCQ Quiz</span>
+                <i class="fa-solid fa-chevron-right text-info"></i>
+              </a>
+              <a href="/teacher/marks" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-square-poll-vertical me-2"></i>Record Student Grades</span>
+                <i class="fa-solid fa-chevron-right text-info"></i>
+              </a>
+              <a href="/teacher/homework" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-book-open me-2"></i>Upload Homework Board</span>
+                <i class="fa-solid fa-chevron-right text-info"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recents Grid -->
+      <div class="row g-4">
+        <!-- Announcements / Bulletins -->
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-bullhorn text-warning me-2"></i>Latest Notice Board Announcements</h5>
+            <ul class="list-unstyled mb-0">
+              <% if (announcements.length === 0) { %>
+                <li class="text-center py-4 text-muted">No public announcements posted yet.</li>
+              <% } else { %>
+                <% announcements.forEach((n, idx) => { %>
+                  <li class="pb-3 <%= idx < announcements.length - 1 ? 'border-bottom border-secondary mb-3' : '' %>">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <strong class="text-info" style="font-size: 0.95rem;"><%= n.title %></strong>
+                      <small class="text-muted"><%= new Date(n.createdAt).toLocaleDateString('en-IN') %></small>
+                    </div>
+                    <p class="text-secondary mb-0" style="font-size: 0.85rem;"><%= n.content %></p>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

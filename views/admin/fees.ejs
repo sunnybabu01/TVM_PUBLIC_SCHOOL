@@ -1,0 +1,178 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  <%- include('../partials/sidebar') %>
+  
+  <main class="main-content-tvm">
+    <%- include('../partials/navbar') %>
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Page Title -->
+      <div class="mb-4">
+        <h2 class="text-white font-weight-bold mb-1">Fee Invoicing & Payments</h2>
+        <p class="text-secondary mb-0" style="font-size: 0.9rem;">Generate billing invoices for individual students or entire classes, review outstanding balances, and record cash payments.</p>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <!-- Billing Generator Panel -->
+        <div class="col-lg-5">
+          <div class="glass-card shadow-lg h-100 card-cyan">
+            <h4 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-file-invoice-dollar text-info me-2"></i>Issue New Invoice</h4>
+            
+            <form action="/admin/fees/create" method="POST">
+              <!-- Invoice Scope -->
+              <div class="mb-3">
+                <label for="billingScope" class="glass-label">Invoice Target Scope</label>
+                <select name="type" id="billingScope" class="form-select glass-input text-white" style="background-color: var(--bg-core);" required>
+                  <option value="individual">Single Student ID</option>
+                  <option value="class">Entire Academic Class</option>
+                </select>
+              </div>
+
+              <!-- Individual ID (Shown by default) -->
+              <div class="mb-3" id="individualIdBox">
+                <label for="studentId" class="glass-label">Student ID</label>
+                <select name="studentId" id="studentId" class="form-select glass-input text-white" style="background-color: var(--bg-core);">
+                  <option value="" disabled selected>Select Student...</option>
+                  <% students.forEach(s => { %>
+                    <option value="<%= s.studentId %>"><%= s.studentId %> - <%= s.name %> (<%= s.className %>)</option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <!-- Class Name Selection (Hidden by default) -->
+              <div class="mb-3 d-none" id="classNameBox">
+                <label for="className" class="glass-label">Class Name</label>
+                <select name="className" id="className" class="form-select glass-input text-white" style="background-color: var(--bg-core);">
+                  <option value="1">Class 1</option>
+                  <option value="2">Class 2</option>
+                  <option value="5">Class 5</option>
+                  <option value="9">Class 9</option>
+                  <option value="10">Class 10</option>
+                </select>
+              </div>
+
+              <!-- Invoice Title -->
+              <div class="mb-3">
+                <label for="title" class="glass-label">Fee Title / Description</label>
+                <input type="text" name="title" id="title" class="form-control glass-input" placeholder="e.g. Tuition Fee - Q1, Admission Fee" required>
+              </div>
+
+              <!-- Amount & Due Date -->
+              <div class="row g-3 mb-4">
+                <div class="col-6">
+                  <label for="amount" class="glass-label">Amount (₹)</label>
+                  <input type="number" name="amount" id="amount" class="form-control glass-input" placeholder="e.g. 4500" required>
+                </div>
+                <div class="col-6">
+                  <label for="dueDate" class="glass-label">Due Date</label>
+                  <input type="date" name="dueDate" id="dueDate" class="form-control glass-input" required>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" class="btn btn-tvm-primary w-100 py-3 text-uppercase font-weight-bold">
+                <i class="fa-solid fa-paper-plane me-2"></i>Generate Invoices
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Accounts Registry -->
+        <div class="col-lg-7">
+          <div class="glass-card shadow-lg h-100">
+            <h4 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-list-check text-info me-2"></i>Invoice Ledger</h4>
+            
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Invoice Detail</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (invoices.length === 0) { %>
+                    <tr>
+                      <td colspan="6" class="text-center py-5 text-muted">No invoices generated yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% invoices.forEach(inv => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= inv.studentId %></td>
+                        <td>
+                          <%= inv.title %>
+                          <% if (inv.paymentId) { %>
+                            <br><small class="text-muted" style="font-size: 0.75rem;"><%= inv.paymentId %></small>
+                          <% } %>
+                        </td>
+                        <td class="text-white font-weight-bold">₹<%= inv.amount %></td>
+                        <td><%= new Date(inv.dueDate).toLocaleDateString('en-IN') %></td>
+                        <td>
+                          <% if (inv.status === 'paid') { %>
+                            <span class="status-badge status-present">Paid</span>
+                          <% } else { %>
+                            <span class="status-badge status-absent">Unpaid</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (inv.status === 'unpaid') { %>
+                            <!-- Form to clear cash payment -->
+                            <form action="/admin/fees/pay-offline" method="POST" onsubmit="return confirm('Confirm offline cash collection for this invoice?');">
+                              <input type="hidden" name="invoiceId" value="<%= inv._id %>">
+                              <button type="submit" class="btn btn-tvm-primary btn-sm px-2 py-1" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-cash-register me-1"></i>Collect Cash
+                              </button>
+                            </form>
+                          <% } else { %>
+                            <span class="text-muted" style="font-size: 0.8rem;">Cash Received</span>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Scope Toggle logic -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const billingScope = document.getElementById('billingScope');
+    const individualIdBox = document.getElementById('individualIdBox');
+    const classNameBox = document.getElementById('classNameBox');
+    const studentIdSelect = document.getElementById('studentId');
+    const classNameSelect = document.getElementById('className');
+
+    if (billingScope) {
+      billingScope.addEventListener('change', () => {
+        if (billingScope.value === 'individual') {
+          individualIdBox.classList.remove('d-none');
+          classNameBox.classList.add('d-none');
+          studentIdSelect.required = true;
+          classNameSelect.required = false;
+        } else {
+          individualIdBox.classList.add('d-none');
+          classNameBox.classList.remove('d-none');
+          studentIdSelect.required = false;
+          classNameSelect.required = true;
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

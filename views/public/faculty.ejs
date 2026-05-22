@@ -1,0 +1,92 @@
+<%- include('../partials/header') %>
+
+<!-- Top Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-tvm sticky-top">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-tvm" href="/">
+      <i class="fa-solid fa-graduation-cap text-info me-2"></i>TVM PUBLIC SCHOOL
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#publicNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="publicNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/about">About</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/facilities">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm active" href="/faculty">Faculty</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/events">Events</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/contact">Contact</a></li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-tvm-primary px-4" href="/login"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>ERP Portal</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<section class="py-5" style="background: rgba(255, 255, 255, 0.01); border-bottom: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <h1 class="text-white font-weight-bold mb-3">Our Core Faculty</h1>
+    <p class="text-secondary mb-0">Meet the accomplished educators leading TVM Public School's academic and creative wings.</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-5">
+  <div class="container">
+    <% if (teachers.length === 0) { %>
+      <!-- Fallback static preview cards if database is not fully populated yet -->
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card text-center card-cyan">
+            <img src="/uploads/default-avatar.png" alt="Faculty" class="rounded-circle border border-info mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+            <h5 class="text-white font-weight-bold mb-1">Prof. Ramesh Kumar</h5>
+            <small class="text-info font-weight-bold d-block mb-3">Mathematics Dean</small>
+            <p class="text-secondary mb-0" style="font-size: 0.85rem;">M.Sc. in Mathematics, 12 years teaching experience.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card text-center card-purple">
+            <img src="/uploads/default-avatar.png" alt="Faculty" class="rounded-circle border border-warning mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+            <h5 class="text-white font-weight-bold mb-1">Prof. Sunita Sharma</h5>
+            <small class="text-warning font-weight-bold d-block mb-3">Physics Specialist</small>
+            <p class="text-secondary mb-0" style="font-size: 0.85rem;">Ph.D. in Physics, former research associate.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card text-center card-emerald">
+            <img src="/uploads/default-avatar.png" alt="Faculty" class="rounded-circle border border-success mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+            <h5 class="text-white font-weight-bold mb-1">Prof. Amit Verma</h5>
+            <small class="text-success font-weight-bold d-block mb-3">Computer Science</small>
+            <p class="text-secondary mb-0" style="font-size: 0.85rem;">B.Tech in CSE, industry certifications in AI/ML.</p>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="row g-4">
+        <% teachers.forEach(teacher => { %>
+          <div class="col-md-6 col-lg-3">
+            <div class="glass-card text-center card-cyan h-100">
+              <img src="<%= teacher.photo || '/uploads/default-avatar.png' %>" alt="<%= teacher.name %> profile photo" class="rounded-circle border border-info mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+              <h5 class="text-white font-weight-bold mb-1"><%= teacher.name %></h5>
+              <small class="text-info font-weight-bold d-block mb-2"><%= teacher.subject %></small>
+              <span class="text-muted d-block" style="font-size: 0.8rem;"><%= teacher.email %></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5" style="border-top: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <p class="text-secondary mb-0" style="font-size: 0.8rem;">&copy; 2026 TVM Public School Patna. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<%- include('../partials/footer') %>

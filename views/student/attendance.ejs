@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">My Daily Attendance Reports</h2>
+          <p class="text-secondary mb-0">Monitor your overall classroom active presence percentages, present sessions, absences and tardiness.</p>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-4">
+        <!-- Attendance Ratio -->
+        <div class="col-md-3">
+          <div class="glass-card shadow-lg card-cyan text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">ATTENDANCE RATIO</span>
+            <% const attendanceRate = stats.total > 0 ? (((stats.present + stats.late) / stats.total) * 100).toFixed(1) : '100.0' %>
+            <h3 class="text-white display-6 font-weight-black mb-0"><%= attendanceRate %>%</h3>
+          </div>
+        </div>
+        <!-- Present -->
+        <div class="col-md-3">
+          <div class="glass-card shadow-lg card-emerald text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">PRESENT SESSIONS</span>
+            <h3 class="text-white display-6 font-weight-black mb-0"><%= stats.present %></h3>
+          </div>
+        </div>
+        <!-- Late -->
+        <div class="col-md-3">
+          <div class="glass-card shadow-lg card-purple text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">TARDY / LATE DEPARTURES</span>
+            <h3 class="text-white display-6 font-weight-black mb-0 text-warning"><%= stats.late %></h3>
+          </div>
+        </div>
+        <!-- Absent -->
+        <div class="col-md-3">
+          <div class="glass-card shadow-lg text-center">
+            <span class="text-secondary font-weight-bold d-block mb-1">ABSENT SESSIONS</span>
+            <h3 class="text-white display-6 font-weight-black mb-0 text-danger"><%= stats.absent %></h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Records Table -->
+      <div class="row">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4">
+              <i class="fa-solid fa-calendar-days text-info me-2"></i>Attendance Log Registry
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Record Date</th>
+                    <th>System Role</th>
+                    <th>Attendance Status</th>
+                    <th>Authorized Auditor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (records.length === 0) { %>
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-muted">No attendance logs registered by faculty yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% records.forEach(record => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= new Date(record.date).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                        <td><span class="badge bg-secondary">Student</span></td>
+                        <td>
+                          <% if (record.status === 'present') { %>
+                            <span class="status-badge status-present"><i class="fa-solid fa-circle-check me-1"></i>Present</span>
+                          <% } else if (record.status === 'absent') { %>
+                            <span class="status-badge status-absent"><i class="fa-solid fa-circle-xmark me-1"></i>Absent</span>
+                          <% } else { %>
+                            <span class="status-badge status-late"><i class="fa-solid fa-clock me-1"></i>Late Arrival</span>
+                          <% } %>
+                        </td>
+                        <td><small class="text-secondary"><%= record.markedBy %></small></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

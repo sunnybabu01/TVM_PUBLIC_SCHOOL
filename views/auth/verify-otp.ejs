@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+
+<div class="login-body">
+  <div class="ambient-bubble bubble-1" style="background: var(--accent-purple);"></div>
+  <div class="ambient-bubble bubble-2" style="background: var(--accent-sunset);"></div>
+  
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="glass-card login-card px-4 py-5 shadow-lg border border-secondary" style="background: rgba(15, 23, 42, 0.7);">
+      
+      <!-- Icon and title -->
+      <div class="login-header mb-4">
+        <i class="fa-solid fa-shield-halved text-warning fs-1 mb-2"></i>
+        <h2 class="login-title">Two-Factor Authentication</h2>
+        <p class="text-secondary mb-0 mt-1" style="font-size: 0.9rem;">Verification OTP code sent to:</p>
+        <span class="text-info font-weight-bold" style="font-size: 0.85rem;"><%= tempUser.email %></span>
+      </div>
+
+      <!-- Alert alerts -->
+      <%- include('../partials/messages') %>
+
+      <% if (typeof debugOtp !== 'undefined' && debugOtp) { %>
+        <div class="alert alert-info border border-info border-opacity-25 text-center py-3 mb-4" style="background: rgba(0, 242, 254, 0.08); border-radius: 12px;">
+          <i class="fa-solid fa-circle-info text-info me-2 fs-5"></i>
+          <span class="text-white">Development Help OTP:</span> 
+          <strong class="text-info fs-5 ms-1" style="letter-spacing: 2px;"><%= debugOtp %></strong>
+          <p class="text-secondary small mb-0 mt-1">*(Since SMTP is not configured in .env, the OTP is displayed here for offline testing)*</p>
+        </div>
+      <% } %>
+
+      <!-- OTP Form -->
+      <form action="/verify-otp" method="POST">
+        
+        <!-- OTP Input -->
+        <div class="mb-4">
+          <label for="otp" class="glass-label"><i class="fa-solid fa-key me-2 text-warning"></i>6-Digit Security OTP</label>
+          <input type="text" name="otp" id="otp" class="form-control glass-input text-center fs-3 font-weight-bold letter-spacing-4" style="letter-spacing: 10px;" placeholder="000000" maxlength="6" autocomplete="off" required>
+          <div class="text-center text-muted mt-2" style="font-size: 0.75rem;">
+            Code is valid for 5 minutes.
+          </div>
+        </div>
+
+        <!-- Submit OTP -->
+        <button type="submit" class="btn btn-tvm-primary w-100 py-3 text-uppercase font-weight-bold">
+          <i class="fa-solid fa-check-double me-2"></i>Verify and Log In
+        </button>
+
+      </form>
+
+      <!-- Action items -->
+      <div class="text-center mt-4">
+        <a href="/login" class="text-secondary text-decoration-none" style="font-size: 0.85rem;">
+          <i class="fa-solid fa-arrow-left me-2"></i>Back to Sign In
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

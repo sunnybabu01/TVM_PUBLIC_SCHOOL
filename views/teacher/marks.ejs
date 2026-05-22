@@ -1,0 +1,195 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">Gradebook & Academic Marks Upload</h2>
+          <p class="text-secondary mb-0">Record exam marks, assign grades, and calculate class percentages.</p>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-file-invoice text-info me-2"></i>Select Scheduled Examination</h5>
+            <form action="/teacher/marks" method="GET" class="row g-3">
+              <div class="col-md-8">
+                <label class="glass-label">Active Exam Registry</label>
+                <select name="examId" class="form-select glass-input" required>
+                  <option value="">-- Choose Exam / Quiz --</option>
+                  <% exams.forEach(exam => { %>
+                    <option value="<%= exam._id %>" <%= selectedExam && selectedExam._id.toString() === exam._id.toString() ? 'selected' : '' %>>
+                      <%= exam.title %> (Class <%= exam.className %> - <%= exam.subject %>) &bull; Scheduled: <%= new Date(exam.examDate).toLocaleDateString('en-IN') %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-tvm-primary w-100">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i>Load Class Gradebook
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marks Entry Table -->
+      <% if (selectedExam) { %>
+        <div class="row">
+          <div class="col-12">
+            <div class="glass-card shadow-lg">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom border-secondary pb-3">
+                <div>
+                  <h5 class="text-white font-weight-bold mb-0">
+                    <i class="fa-solid fa-award text-success me-2"></i>Gradebook: <%= selectedExam.title %>
+                  </h5>
+                  <small class="text-secondary mt-1 d-block">
+                    Target: <strong class="text-info">Class <%= selectedExam.className %></strong> 
+                    &nbsp;&bull;&nbsp; 
+                    Subject: <strong class="text-info"><%= selectedExam.subject %></strong>
+                  </small>
+                </div>
+              </div>
+
+              <form action="/teacher/marks" method="POST" onsubmit="return compileMarks()">
+                <input type="hidden" name="examId" value="<%= selectedExam._id %>">
+                <input type="hidden" name="results" id="resultsJsonField">
+
+                <div class="table-responsive">
+                  <table class="tvm-table">
+                    <thead>
+                      <tr>
+                        <th>Roll No</th>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th style="width: 150px;">Marks Obtained</th>
+                        <th style="width: 150px;">Total Marks</th>
+                        <th>Teacher's Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (students.length === 0) { %>
+                        <tr>
+                          <td colspan="6" class="text-center py-4 text-muted">No students currently registered in Class <%= selectedExam.className %>.</td>
+                        </tr>
+                      <% } else { %>
+                        <% students.forEach(student => { %>
+                          <tr class="student-mark-row" data-id="<%= student.studentId %>">
+                            <td class="font-weight-bold text-white"><%= student.rollNumber %></td>
+                            <td class="text-info font-weight-bold"><%= student.studentId %></td>
+                            <td class="text-white"><%= student.name %></td>
+                            <td>
+                              <input type="number" class="form-control glass-input score-input" 
+                                required min="0" max="1000" step="0.5" 
+                                value="<%= student.marksObtained %>" placeholder="0">
+                            </td>
+                            <td>
+                              <input type="number" class="form-control glass-input total-input" 
+                                required min="1" max="1000" 
+                                value="<%= student.totalMarks %>">
+                            </td>
+                            <td>
+                              <input type="text" class="form-control glass-input remark-input" 
+                                value="<%= student.remarks %>" placeholder="e.g. Excellent work!">
+                            </td>
+                          </tr>
+                        <% }) %>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+
+                <% if (students.length > 0) { %>
+                  <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/teacher/dashboard" class="btn btn-tvm-secondary">Discard Changes</a>
+                    <button type="submit" class="btn btn-tvm-primary">
+                      <i class="fa-solid fa-floppy-disk me-2"></i>Save & Calculate Grades
+                    </button>
+                  </div>
+                <% } %>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="row">
+          <div class="col-12">
+            <div class="glass-card shadow-lg text-center py-5 text-secondary">
+              <i class="fa-solid fa-file-lines display-4 mb-3 d-block text-muted"></i>
+              Please select a scheduled exam or quiz from the filters above to load the student grade list.
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function compileMarks() {
+    const rows = document.querySelectorAll('.student-mark-row');
+    if (rows.length === 0) {
+      alert('Error: No student marks to upload.');
+      return false;
+    }
+
+    const marksArray = [];
+    let isValid = true;
+
+    rows.forEach(row => {
+      const studentId = row.getAttribute('data-id');
+      const scoreVal = row.querySelector('.score-input').value;
+      const totalVal = row.querySelector('.total-input').value;
+      const remarks = row.querySelector('.remark-input').value;
+
+      const marksObtained = parseFloat(scoreVal);
+      const totalMarks = parseFloat(totalVal);
+
+      if (isNaN(marksObtained)) {
+        alert(`Error: Please enter a valid score for student: ${studentId}`);
+        isValid = false;
+        return;
+      }
+
+      if (marksObtained > totalMarks) {
+        alert(`Error: Score (${marksObtained}) cannot be higher than Total Marks (${totalMarks}) for student: ${studentId}`);
+        isValid = false;
+        return;
+      }
+
+      marksArray.push({
+        studentId,
+        marksObtained,
+        totalMarks,
+        remarks
+      });
+    });
+
+    if (!isValid) return false;
+
+    document.getElementById('resultsJsonField').value = JSON.stringify(marksArray);
+    return true;
+  }
+</script>
+
+<%- include('../partials/footer') %>

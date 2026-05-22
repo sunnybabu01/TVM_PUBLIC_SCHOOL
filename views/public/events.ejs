@@ -1,0 +1,96 @@
+<%- include('../partials/header') %>
+
+<!-- Top Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-tvm sticky-top">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-tvm" href="/">
+      <i class="fa-solid fa-graduation-cap text-info me-2"></i>TVM PUBLIC SCHOOL
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#publicNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="publicNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/about">About</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/facilities">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/faculty">Faculty</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm active" href="/events">Events</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/contact">Contact</a></li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-tvm-primary px-4" href="/login"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>ERP Portal</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<section class="py-5" style="background: rgba(255, 255, 255, 0.01); border-bottom: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <h1 class="text-white font-weight-bold mb-3">Academic and Cultural Events</h1>
+    <p class="text-secondary mb-0">Follow our active school calendar, upcoming sports fests, student workshops, and seasonal terms.</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-5">
+  <div class="container">
+    <% if (events.length === 0) { %>
+      <div class="row g-4">
+        <!-- Event 1 -->
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg border border-secondary p-4 h-100 card-cyan">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge bg-info bg-opacity-20 text-info">ACADEMIC WORKSHOP</span>
+              <strong class="text-secondary" style="font-size: 0.85rem;">June 15, 2026</strong>
+            </div>
+            <h5 class="text-white font-weight-bold mb-2">Inter-School Science and AI Seminar</h5>
+            <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+              A comprehensive student symposium highlighting practical projects in robotics, automation coding, and general scientific models.
+            </p>
+          </div>
+        </div>
+
+        <!-- Event 2 -->
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg border border-secondary p-4 h-100 card-purple">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge bg-warning bg-opacity-20 text-warning">SPORTS CHAMPIONSHIP</span>
+              <strong class="text-secondary" style="font-size: 0.85rem;">July 10, 2026</strong>
+            </div>
+            <h5 class="text-white font-weight-bold mb-2">Annual Sports Meet & Athletic Shield</h5>
+            <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.6;">
+              Inter-house track sprints, relay racing, basketball play-offs, and football championship tournaments across all senior batches.
+            </p>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="row g-4">
+        <% events.forEach(event => { %>
+          <div class="col-md-6">
+            <div class="glass-card shadow-lg border border-secondary p-4 h-100 card-cyan">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-info bg-opacity-20 text-info"><%= event.category %></span>
+                <strong class="text-secondary" style="font-size: 0.85rem;"><%= new Date(event.eventDate).toLocaleDateString('en-IN') %></strong>
+              </div>
+              <h5 class="text-white font-weight-bold mb-2"><%= event.title %></h5>
+              <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.6;"><%= event.description %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5" style="border-top: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <p class="text-secondary mb-0" style="font-size: 0.8rem;">&copy; 2026 TVM Public School Patna. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<%- include('../partials/footer') %>

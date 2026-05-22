@@ -1,0 +1,156 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg border border-secondary" style="background: linear-gradient(135deg, rgba(31,41,55,0.4) 0%, rgba(15,23,42,0.6) 100%);">
+            <div class="d-flex align-items-center gap-4 flex-wrap">
+              <img src="<%= student.photo || '/uploads/default-avatar.png' %>" alt="Student Photo" class="rounded-circle border border-info" style="width: 80px; height: 80px; object-fit: cover;">
+              <div>
+                <h2 class="text-white font-weight-bold mb-1">Welcome, <%= student.name %></h2>
+                <p class="text-secondary mb-0">Student Portal &bull; Class <%= student.className %>-<%= student.section %> &bull; Roll Number: <%= student.rollNumber %> &bull; Student ID: <%= student.studentId %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-5">
+        <!-- Attendance -->
+        <div class="col-md-6 col-xl-4">
+          <div class="glass-card h-100 card-cyan shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">MY ATTENDANCE</span>
+              <i class="fa-solid fa-calendar-days text-info fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.attendance %>%</h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-check me-1"></i>Active school percentage</span>
+          </div>
+        </div>
+        
+        <!-- Unpaid fees -->
+        <div class="col-md-6 col-xl-4">
+          <div class="glass-card h-100 card-purple shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">UNPAID INVOICES</span>
+              <i class="fa-solid fa-file-invoice-dollar text-warning fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.unpaidCount %></h3>
+            <span class="text-warning font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-circle-exclamation me-1"></i>Pending dues desk</span>
+          </div>
+        </div>
+
+        <!-- Paid fees -->
+        <div class="col-md-12 col-xl-4">
+          <div class="glass-card h-100 card-emerald shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">FEES DISBURSED</span>
+              <i class="fa-solid fa-circle-check text-success fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1">₹<%= stats.paidFees %></h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-shield-halved me-1"></i>Total secure transactions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions grid and Notices -->
+      <div class="row g-4 mb-5">
+        <!-- Announcements / Notices -->
+        <div class="col-12 col-xl-8">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-bullhorn text-warning me-2"></i>School Bulletin Board Notices</h5>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+              <% if (notifications.length === 0) { %>
+                <li class="text-center py-4 text-muted">No notices posted recently. Check back later.</li>
+              <% } else { %>
+                <% notifications.forEach((n, idx) => { %>
+                  <li class="p-3 rounded border border-secondary" style="background: rgba(255, 255, 255, 0.015);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <strong class="text-info" style="font-size: 0.95rem;"><%= n.title %></strong>
+                      <small class="text-muted"><%= new Date(n.createdAt).toLocaleDateString('en-IN') %></small>
+                    </div>
+                    <p class="text-secondary mb-0 fs-7" style="line-height: 1.5; white-space: pre-wrap;"><%= n.content %></p>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Student Action Buttons Panel -->
+        <div class="col-12 col-xl-4">
+          <div class="glass-card shadow-lg h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="text-white font-weight-bold mb-3">Student Workspace</h5>
+              <p class="text-secondary mb-4" style="font-size: 0.9rem;">Access printable academic ID cards, grades portfolios, pending fee invoices checkout, and daily homework registers.</p>
+            </div>
+            <div class="d-grid gap-2">
+              <div class="row g-2">
+                <div class="col-6">
+                  <a href="/student/profile" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-user-astronaut text-info fs-5"></i>
+                    <span class="fs-8">Profile Card</span>
+                  </a>
+                </div>
+                <div class="col-6">
+                  <a href="/student/attendance" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-calendar-check text-success fs-5"></i>
+                    <span class="fs-8">Attendance</span>
+                  </a>
+                </div>
+                <div class="col-6">
+                  <a href="/student/results" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-award text-warning fs-5"></i>
+                    <span class="fs-8">Quiz Reports</span>
+                  </a>
+                </div>
+                <div class="col-6">
+                  <a href="/student/homework" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-book-open-reader text-purple fs-5"></i>
+                    <span class="fs-8">Homework</span>
+                  </a>
+                </div>
+                <div class="col-6">
+                  <a href="/student/id-card" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-id-card text-info fs-5"></i>
+                    <span class="fs-8">Student ID</span>
+                  </a>
+                </div>
+                <div class="col-6">
+                  <a href="/student/admit-card" class="btn btn-tvm-secondary w-100 py-3 text-center d-flex flex-column align-items-center gap-2">
+                    <i class="fa-solid fa-ticket text-danger fs-5"></i>
+                    <span class="fs-8">Admit Card</span>
+                  </a>
+                </div>
+              </div>
+              <a href="/student/fee-payment" class="btn btn-tvm-primary w-100 py-3 mt-2 d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-file-invoice-dollar me-2"></i>Pay Fees Invoice Desk</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

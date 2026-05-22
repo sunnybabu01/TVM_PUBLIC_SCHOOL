@@ -1,0 +1,184 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">Student Attendance Register</h2>
+          <p class="text-secondary mb-0">Record and compile student daily classroom attendance records.</p>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-filter text-info me-2"></i>Select Class Registry</h5>
+            <form action="/teacher/attendance" method="GET" class="row g-3">
+              <div class="col-md-3">
+                <label class="glass-label">Class Name</label>
+                <select name="className" class="form-select glass-input" required>
+                  <option value="">-- Choose Class --</option>
+                  <option value="1" <%= className === '1' ? 'selected' : '' %>>Class 1</option>
+                  <option value="2" <%= className === '2' ? 'selected' : '' %>>Class 2</option>
+                  <option value="3" <%= className === '3' ? 'selected' : '' %>>Class 3</option>
+                  <option value="4" <%= className === '4' ? 'selected' : '' %>>Class 4</option>
+                  <option value="5" <%= className === '5' ? 'selected' : '' %>>Class 5</option>
+                  <option value="6" <%= className === '6' ? 'selected' : '' %>>Class 6</option>
+                  <option value="7" <%= className === '7' ? 'selected' : '' %>>Class 7</option>
+                  <option value="8" <%= className === '8' ? 'selected' : '' %>>Class 8</option>
+                  <option value="9" <%= className === '9' ? 'selected' : '' %>>Class 9</option>
+                  <option value="10" <%= className === '10' ? 'selected' : '' %>>Class 10</option>
+                  <option value="11" <%= className === '11' ? 'selected' : '' %>>Class 11</option>
+                  <option value="12" <%= className === '12' ? 'selected' : '' %>>Class 12</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="glass-label">Section</label>
+                <select name="section" class="form-select glass-input" required>
+                  <option value="">-- Choose Section --</option>
+                  <option value="A" <%= section === 'A' ? 'selected' : '' %>>Section A</option>
+                  <option value="B" <%= section === 'B' ? 'selected' : '' %>>Section B</option>
+                  <option value="C" <%= section === 'C' ? 'selected' : '' %>>Section C</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="glass-label">Attendance Date</label>
+                <input type="date" name="date" class="form-control glass-input" required value="<%= date %>">
+              </div>
+              <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-tvm-primary w-100">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i>Load Student List
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Sheet -->
+      <% if (className && section) { %>
+        <div class="row">
+          <div class="col-12">
+            <div class="glass-card shadow-lg">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom border-secondary pb-3">
+                <div>
+                  <h5 class="text-white font-weight-bold mb-0">
+                    <i class="fa-solid fa-clipboard-check text-success me-2"></i>Attendance Sheet: Class <%= className %>-<%= section %>
+                  </h5>
+                  <small class="text-secondary mt-1 d-block">Marking for date: <strong class="text-info"><%= new Date(date).toLocaleDateString('en-IN') %></strong></small>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm btn-tvm-secondary text-success" onclick="markAll('present')">All Present</button>
+                  <button type="button" class="btn btn-sm btn-tvm-secondary text-danger" onclick="markAll('absent')">All Absent</button>
+                </div>
+              </div>
+
+              <form action="/teacher/attendance" method="POST">
+                <input type="hidden" name="className" value="<%= className %>">
+                <input type="hidden" name="section" value="<%= section %>">
+                <input type="hidden" name="date" value="<%= date %>">
+
+                <div class="table-responsive">
+                  <table class="tvm-table">
+                    <thead>
+                      <tr>
+                        <th>Roll No</th>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th class="text-center" style="width: 400px;">Attendance Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (students.length === 0) { %>
+                        <tr>
+                          <td colspan="4" class="text-center py-4 text-muted">No students currently registered in Class <%= className %>-<%= section %>.</td>
+                        </tr>
+                      <% } else { %>
+                        <% students.forEach(student => { %>
+                          <tr>
+                            <td class="font-weight-bold text-white"><%= student.rollNumber %></td>
+                            <td class="text-info font-weight-bold"><%= student.studentId %></td>
+                            <td class="text-white"><%= student.name %></td>
+                            <td>
+                              <div class="d-flex justify-content-around align-items-center">
+                                <label class="d-flex align-items-center gap-2 text-success font-weight-bold cursor-pointer">
+                                  <input type="radio" name="attendance[<%= student.studentId %>]" value="present" 
+                                    <%= student.attendanceStatus === 'present' ? 'checked' : '' %>
+                                    class="form-check-input bg-dark border-secondary cursor-pointer">
+                                  Present
+                                </label>
+                                <label class="d-flex align-items-center gap-2 text-danger font-weight-bold cursor-pointer">
+                                  <input type="radio" name="attendance[<%= student.studentId %>]" value="absent" 
+                                    <%= student.attendanceStatus === 'absent' ? 'checked' : '' %>
+                                    class="form-check-input bg-dark border-secondary cursor-pointer">
+                                  Absent
+                                </label>
+                                <label class="d-flex align-items-center gap-2 text-warning font-weight-bold cursor-pointer">
+                                  <input type="radio" name="attendance[<%= student.studentId %>]" value="late" 
+                                    <%= student.attendanceStatus === 'late' ? 'checked' : '' %>
+                                    class="form-check-input bg-dark border-secondary cursor-pointer">
+                                  Late
+                                </label>
+                              </div>
+                            </td>
+                          </tr>
+                        <% }) %>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+
+                <% if (students.length > 0) { %>
+                  <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/teacher/dashboard" class="btn btn-tvm-secondary">Discard Changes</a>
+                    <button type="submit" class="btn btn-tvm-primary">
+                      <i class="fa-solid fa-floppy-disk me-2"></i>Save Attendance Register
+                    </button>
+                  </div>
+                <% } %>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="row">
+          <div class="col-12">
+            <div class="glass-card shadow-lg text-center py-5 text-secondary">
+              <i class="fa-solid fa-list-ol display-4 mb-3 d-block text-muted"></i>
+              Please select a Class, Section, and Date from the filters above to load the student registry database.
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function markAll(status) {
+    const radioButtons = document.querySelectorAll(`input[type="radio"][value="${status}"]`);
+    radioButtons.forEach(radio => {
+      radio.checked = true;
+    });
+  }
+</script>
+
+<%- include('../partials/footer') %>

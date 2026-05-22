@@ -1,0 +1,186 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0 d-print-block">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4 d-print-none">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Fee Payment Receipt</h2>
+            <p class="text-secondary mb-0">Official verified proof of school fee disbursement. Print or download for your files.</p>
+          </div>
+          <button class="btn btn-tvm-primary" onclick="window.print()">
+            <i class="fa-solid fa-print me-2"></i>Print Receipt Slip
+          </button>
+        </div>
+      </div>
+
+      <!-- Receipt Container -->
+      <div class="row justify-content-center">
+        <div class="col-xl-8">
+          
+          <!-- Sleek Professional Fee Receipt -->
+          <div class="tvm-receipt-element glass-card border border-secondary p-5 shadow-lg" style="background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(3,7,18,0.95) 100%); border-radius: 20px; page-break-inside: avoid;">
+            
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-3 border-bottom border-secondary">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-info fs-1"></i>
+                <div>
+                  <h4 class="text-white font-weight-bold mb-1" style="letter-spacing: 1px;">TVM PUBLIC SCHOOL</h4>
+                  <small class="text-secondary">Administrative Office, Patna, Bihar &bull; ESTD 2026</small>
+                </div>
+              </div>
+              
+              <div class="text-end text-success font-weight-bold">
+                <span class="status-badge status-present">
+                  <i class="fa-solid fa-circle-check me-1"></i>PAID RECEIPT
+                </span>
+              </div>
+            </div>
+
+            <!-- Receipt transaction summary -->
+            <div class="row g-4 mb-4">
+              <div class="col-md-7">
+                <div class="row g-3 text-secondary fs-8">
+                  <div class="col-6">
+                    <span class="d-block mb-1 font-weight-bold">STUDENT NAME</span>
+                    <strong class="text-white fs-7"><%= student.name %></strong>
+                  </div>
+                  <div class="col-6">
+                    <span class="d-block mb-1 font-weight-bold">STUDENT ID</span>
+                    <strong class="text-info fs-7"><%= student.studentId %></strong>
+                  </div>
+                  <div class="col-6">
+                    <span class="d-block mb-1 font-weight-bold">CLASS / SECTION</span>
+                    <strong class="text-white fs-7">Class <%= student.className %> - <%= student.section %></strong>
+                  </div>
+                  <div class="col-6">
+                    <span class="d-block mb-1 font-weight-bold">ROLL NUMBER</span>
+                    <strong class="text-white fs-7">Roll No: <%= student.rollNumber %></strong>
+                  </div>
+                  <div class="col-12">
+                    <span class="d-block mb-1 font-weight-bold">BILLING DESCRIPTION</span>
+                    <strong class="text-white fs-7"><%= invoice.title %></strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Verification QR & Details -->
+              <div class="col-md-5 d-flex justify-content-md-end justify-content-center align-items-center gap-3 flex-wrap">
+                <div class="text-md-end text-center fs-8 text-secondary">
+                  <span class="d-block mb-1 font-weight-bold">TRANSACTION REF ID</span>
+                  <strong class="text-info d-block mb-2"><%= invoice.paymentId %></strong>
+                  <span class="d-block mb-1 font-weight-bold">PAYMENT DATE</span>
+                  <strong class="text-white"><%= formatDate(invoice.paidAt) %></strong>
+                </div>
+                <img src="<%= qrCodeDataUrl %>" alt="Verification QR" class="bg-white p-1 rounded shadow" style="width: 100px; height: 100px;">
+              </div>
+            </div>
+
+            <!-- Receipt Items Invoice Table -->
+            <h6 class="text-white font-weight-bold mb-3 mt-5"><i class="fa-solid fa-list-check text-info me-2"></i>Fee Statement Breakdown</h6>
+            <div class="table-responsive">
+              <table class="tvm-table table-bordered border-secondary">
+                <thead>
+                  <tr style="background: rgba(255, 255, 255, 0.02);">
+                    <th>Item Description</th>
+                    <th>Billing Method</th>
+                    <th>Reference Code</th>
+                    <th class="text-end">Paid Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-white font-weight-bold"><%= invoice.title %></td>
+                    <td>Online (<%= invoice.paymentMethod %> Secure Gateway)</td>
+                    <td class="text-info"><%= invoice.paymentId %></td>
+                    <td class="text-white font-weight-bold text-end">₹<%= invoice.amount %>.00</td>
+                  </tr>
+                  <tr style="background: rgba(255, 255, 255, 0.01);">
+                    <td colspan="3" class="text-end font-weight-bold text-secondary">GRAND TOTAL DISBURSED:</td>
+                    <td class="text-success font-weight-bold text-end" style="font-size: 1.1rem;">₹<%= invoice.amount %>.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Verification stamp -->
+            <div class="p-3 rounded border border-secondary mt-4 fs-8 text-secondary" style="background: rgba(255, 255, 255, 0.01);">
+              <h6 class="text-white font-weight-bold mb-2 fs-7"><i class="fa-solid fa-circle-check text-success me-2"></i>Verified Transaction Certificate</h6>
+              <p class="mb-0 leading-relaxed">
+                This transaction has been successfully processed and recorded on the TVM Public School database. The cryptographic QR code allows administrators to verify the receipt integrity offline from any reader. No signature is required.
+              </p>
+            </div>
+
+            <!-- Signature footer -->
+            <div class="row mt-5 pt-4 text-center text-secondary fs-8">
+              <div class="col-6 mb-3">
+                <hr class="border-secondary mx-auto mb-2" style="width: 150px;">
+                <span>Authorized Financial Officer</span>
+              </div>
+              <div class="col-6">
+                <hr class="border-secondary mx-auto mb-2" style="width: 150px;">
+                <span>Director Office, Patna</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Print overrides for Hall Ticket format -->
+<style>
+  @media print {
+    body, html {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    .tvm-receipt-element {
+      background: #fff !important;
+      border: 2px solid #000 !important;
+      box-shadow: none !important;
+      color: #000 !important;
+      padding: 30px !important;
+    }
+    .tvm-receipt-element .text-white {
+      color: #000 !important;
+    }
+    .tvm-receipt-element .text-secondary,
+    .tvm-receipt-element .text-info {
+      color: #333 !important;
+    }
+    .tvm-receipt-element .border-secondary {
+      border-color: #000 !important;
+    }
+    .tvm-receipt-element .tvm-table th {
+      background: #f1f5f9 !important;
+      border: 1px solid #000 !important;
+      color: #000 !important;
+    }
+    .tvm-receipt-element .tvm-table td {
+      border: 1px solid #000 !important;
+      color: #000 !important;
+    }
+  }
+</style>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,302 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Library System</h2>
+            <p class="text-secondary mb-0">Manage school library books catalog and register book issues or returns for students.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-tvm-primary" data-bs-toggle="modal" data-bs-target="#addBookModal">
+              <i class="fa-solid fa-plus me-2"></i>Add New Book
+            </button>
+            <button class="btn btn-tvm-secondary text-info" data-bs-toggle="modal" data-bs-target="#issueBookModal">
+              <i class="fa-solid fa-hand-holding-hand me-2"></i>Issue a Book
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-cyan">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-secondary font-weight-bold">TOTAL TITLES</span>
+              <i class="fa-solid fa-book text-info fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-0"><%= books.length %></h3>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-emerald">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-secondary font-weight-bold">TOTAL COPIES STOCKED</span>
+              <i class="fa-solid fa-layer-group text-success fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-0">
+              <%= books.reduce((acc, curr) => acc + curr.quantity, 0) %>
+            </h3>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card shadow-lg card-purple">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-secondary font-weight-bold">ACTIVE ISSUES</span>
+              <i class="fa-solid fa-clock text-warning fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-0">
+              <%= books.reduce((acc, curr) => acc + curr.issues.filter(i => i.status === 'issued').length, 0) %>
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Books Catalog List -->
+      <div class="row">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-book-bookmark text-info me-2"></i>Library Books Catalogue</h5>
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Availability</th>
+                    <th>Active Issues</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (books.length === 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center py-4 text-muted">No books recorded in the catalog. Add some books to get started.</td>
+                    </tr>
+                  <% } else { %>
+                    <% books.forEach(book => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= book.isbn || 'N/A' %></td>
+                        <td class="text-white"><%= book.title %></td>
+                        <td><%= book.author %></td>
+                        <td><span class="badge bg-secondary"><%= book.category %></span></td>
+                        <td>
+                          <span class="font-weight-bold <%= book.available > 0 ? 'text-success' : 'text-danger' %>">
+                            <%= book.available %> / <%= book.quantity %> Copies
+                          </span>
+                        </td>
+                        <td>
+                          <% const activeIssues = book.issues.filter(i => i.status === 'issued') %>
+                          <% if (activeIssues.length > 0) { %>
+                            <span class="status-badge status-late"><%= activeIssues.length %> Issued</span>
+                          <% } else { %>
+                            <span class="status-badge status-present">None</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <button class="btn btn-tvm-secondary py-1 px-3 fs-7" onclick="toggleIssuesTable('<%= book._id %>')">
+                            <i class="fa-solid fa-eye me-1"></i> View Logs
+                          </button>
+                        </td>
+                      </tr>
+                      <!-- Nested active issues display -->
+                      <tr id="issues-log-<%= book._id %>" style="display: none; background: rgba(0, 0, 0, 0.2);">
+                        <td colspan="7" class="p-3">
+                          <div class="px-3 py-2 border-start border-3 border-info">
+                            <h6 class="text-white font-weight-bold mb-3">Issue/Return History for "<%= book.title %>"</h6>
+                            <% if (book.issues.length === 0) { %>
+                              <p class="text-muted mb-0 fs-7">No issue records logged for this volume.</p>
+                            <% } else { %>
+                              <table class="table table-dark table-sm table-borderless fs-7 mb-0">
+                                <thead>
+                                  <tr class="text-secondary border-bottom border-secondary">
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Return Details</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <% book.issues.forEach(issue => { %>
+                                    <tr>
+                                      <td class="text-info"><%= issue.studentId %></td>
+                                      <td><%= issue.studentName %></td>
+                                      <td><%= new Date(issue.issueDate).toLocaleDateString('en-IN') %></td>
+                                      <td><%= new Date(issue.dueDate).toLocaleDateString('en-IN') %></td>
+                                      <td>
+                                        <span class="badge <%= issue.status === 'returned' ? 'bg-success' : 'bg-warning text-dark' %>">
+                                          <%= issue.status.toUpperCase() %>
+                                        </span>
+                                      </td>
+                                      <td>
+                                        <% if (issue.status === 'returned') { %>
+                                          <span class="text-secondary">
+                                            Returned on <%= new Date(issue.returnDate).toLocaleDateString('en-IN') %> 
+                                            <% if (issue.fineAmount > 0) { %>
+                                              <span class="text-danger">(Fine: ₹<%= issue.fineAmount %>)</span>
+                                            <% } %>
+                                          </span>
+                                        <% } else { %>
+                                          <span class="text-warning">Pending</span>
+                                        <% } %>
+                                      </td>
+                                      <td>
+                                        <% if (issue.status === 'issued') { %>
+                                          <form action="/admin/library/return" method="POST" class="d-inline">
+                                            <input type="hidden" name="bookId" value="<%= book._id %>">
+                                            <input type="hidden" name="issueId" value="<%= issue._id %>">
+                                            <div class="input-group input-group-sm d-inline-flex" style="width: auto;">
+                                              <span class="input-group-text bg-dark border-secondary text-secondary" style="font-size: 0.75rem;">Fine ₹</span>
+                                              <input type="number" name="fineAmount" class="form-control bg-dark border-secondary text-white" value="0" min="0" style="max-width: 60px; font-size: 0.75rem;">
+                                              <button class="btn btn-success btn-sm" type="submit">Return</button>
+                                            </div>
+                                          </form>
+                                        <% } else { %>
+                                          <span class="text-muted">Cleared</span>
+                                        <% } %>
+                                      </td>
+                                    </tr>
+                                  <% }) %>
+                                </tbody>
+                              </table>
+                            <% } %>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border border-secondary text-white">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title font-weight-bold" id="addBookModalLabel">Add New Book to Library</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/library/add" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="glass-label">Book Title</label>
+            <input type="text" name="title" class="form-control glass-input" required placeholder="e.g. Fundamental Concepts of Physics">
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Author Name</label>
+            <input type="text" name="author" class="form-control glass-input" required placeholder="e.g. Dr. H.C. Verma">
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">ISBN Reference Number</label>
+            <input type="text" name="isbn" class="form-control glass-input" placeholder="e.g. 9788177091878">
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Book Category</label>
+            <select name="category" class="form-select glass-input">
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+              <option value="Literature">Literature</option>
+              <option value="History">History</option>
+              <option value="General">General Reference</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Total Quantity stocked</label>
+            <input type="number" name="quantity" class="form-control glass-input" required min="1" value="5">
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Add Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Issue Book Modal -->
+<div class="modal fade" id="issueBookModal" tabindex="-1" aria-labelledby="issueBookModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border border-secondary text-white">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title font-weight-bold" id="issueBookModalLabel">Register Book Issue</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/library/issue" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="glass-label">Select Book</label>
+            <select name="bookId" class="form-select glass-input" required>
+              <% books.forEach(book => { %>
+                <% if (book.available > 0) { %>
+                  <option value="<%= book._id %>"><%= book.title %> (Available: <%= book.available %>)</option>
+                <% } %>
+              <% }) %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Select Student</label>
+            <select name="studentId" class="form-select glass-input" required>
+              <% students.forEach(student => { %>
+                <option value="<%= student.studentId %>"><%= student.name %> (<%= student.studentId %>)</option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="glass-label">Due Date for Return</label>
+            <input type="date" name="dueDate" class="form-control glass-input" required value="<%= new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] %>">
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Issue Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleIssuesTable(bookId) {
+    const row = document.getElementById('issues-log-' + bookId);
+    if (row.style.display === 'none') {
+      row.style.display = 'table-row';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>

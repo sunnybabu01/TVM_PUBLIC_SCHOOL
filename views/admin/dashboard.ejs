@@ -1,0 +1,228 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="glass-card shadow-lg border border-secondary" style="background: linear-gradient(135deg, rgba(31,41,55,0.4) 0%, rgba(15,23,42,0.6) 100%);">
+            <h2 class="text-white font-weight-bold mb-1">Director's Control Centre</h2>
+            <p class="text-secondary mb-0">Total administration access to TVM Public School, Patna. Monitor school operations, accounts, and academic results.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Cards Grid -->
+      <div class="row g-4 mb-5">
+        <!-- Students -->
+        <div class="col-md-6 col-xl-3">
+          <div class="glass-card h-100 card-cyan shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">STUDENTS ENROLLED</span>
+              <i class="fa-solid fa-user-graduate text-info fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.students %></h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-arrow-trend-up me-1"></i>Active Academics</span>
+          </div>
+        </div>
+        
+        <!-- Faculty -->
+        <div class="col-md-6 col-xl-3">
+          <div class="glass-card h-100 card-purple shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">TEACHING FACULTY</span>
+              <i class="fa-solid fa-chalkboard-user text-warning fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.teachers %></h3>
+            <span class="text-info font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-shield me-1"></i>Provisioned Accounts</span>
+          </div>
+        </div>
+
+        <!-- Library -->
+        <div class="col-md-6 col-xl-3">
+          <div class="glass-card h-100 card-emerald shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">BOOKS CATALOGUE</span>
+              <i class="fa-solid fa-book-open text-success fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.books %></h3>
+            <span class="text-success font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-check me-1"></i>Volumes stocked</span>
+          </div>
+        </div>
+
+        <!-- Total Fees -->
+        <div class="col-md-6 col-xl-3">
+          <div class="glass-card h-100 shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold">FEES COLLECTED</span>
+              <i class="fa-solid fa-wallet text-info fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1">₹<%= stats.fees %></h3>
+            <span class="text-info font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-receipt me-1"></i>Verified Online/Offline</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytical Chart Block -->
+      <div class="row g-4 mb-5">
+        <div class="col-12 col-xl-8">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4"><i class="fa-solid fa-chart-line text-info me-2"></i>Accounts & Fee Collections Chart</h5>
+            <div style="position: relative; height: 300px; width: 100%;">
+              <canvas id="collectionsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right mini-column: Action Buttons -->
+        <div class="col-12 col-xl-4">
+          <div class="glass-card shadow-lg h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="text-white font-weight-bold mb-3">Quick Control Panel</h5>
+              <p class="text-secondary mb-4" style="font-size: 0.9rem;">Trigger immediate database entries or view statistics registers.</p>
+            </div>
+            <div class="d-grid gap-3">
+              <a href="/admin/students" class="btn btn-tvm-primary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-user-plus me-2"></i>Register New Student</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </a>
+              <a href="/admin/teachers" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-user-tie me-2"></i>Provision Teacher ID</span>
+                <i class="fa-solid fa-chevron-right text-info"></i>
+              </a>
+              <a href="/admin/fees" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-file-invoice me-2"></i>Issue Class Billing</span>
+                <i class="fa-solid fa-chevron-right text-info"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recents Grid -->
+      <div class="row g-4">
+        <!-- Recent Students -->
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-user-graduate text-info me-2"></i>Recently Enrolled Students</h5>
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (recentStudents.length === 0) { %>
+                    <tr>
+                      <td colspan="3" class="text-center py-4 text-muted">No students registered yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% recentStudents.forEach(s => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= s.studentId %></td>
+                        <td><%= s.name %></td>
+                        <td><%= s.className %> - <%= s.section %></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Notices -->
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-bullhorn text-warning me-2"></i>Latest Notice Board Entries</h5>
+            <ul class="list-unstyled mb-0">
+              <% if (recentNotifications.length === 0) { %>
+                <li class="text-center py-4 text-muted">No notices posted yet.</li>
+              <% } else { %>
+                <% recentNotifications.forEach((n, idx) => { %>
+                  <li class="pb-3 <%= idx < recentNotifications.length - 1 ? 'border-bottom border-secondary mb-3' : '' %>">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <strong class="text-info" style="font-size: 0.9rem;"><%= n.title %></strong>
+                      <small class="text-muted"><%= new Date(n.createdAt).toLocaleDateString('en-IN') %></small>
+                    </div>
+                    <p class="text-secondary mb-0" style="font-size: 0.85rem;"><%= n.content.substring(0, 80) %>...</p>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('collectionsChart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: <%- JSON.stringify(chart.labels) %>,
+          datasets: [{
+            label: 'Monthly Fee Inflow (₹)',
+            data: <%- JSON.stringify(chart.data) %>,
+            borderColor: '#00F2FE',
+            backgroundColor: 'rgba(0, 242, 254, 0.05)',
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#7F00FF',
+            pointBorderColor: '#00F2FE',
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#94A3B8',
+                font: { family: 'Outfit', size: 12 }
+              }
+            }
+          },
+          scales: {
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94A3B8', font: { family: 'Outfit' } }
+            },
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94A3B8', font: { family: 'Outfit' } }
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

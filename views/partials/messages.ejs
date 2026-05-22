@@ -1,0 +1,38 @@
+<% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show border-0 shadow-lg mb-4 glass-card position-relative" role="alert" style="border-left: 5px solid #38F9D7 !important; background: rgba(16, 185, 129, 0.15) !important;">
+    <div class="d-flex align-items-center">
+      <i class="fa-solid fa-circle-check me-3 fs-4" style="color: #38F9D7;"></i>
+      <div>
+        <strong style="color: #38F9D7;">Success!</strong>
+        <span class="ms-1" style="color: #F8FAFC;"><%= success_msg %></span>
+      </div>
+    </div>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show border-0 shadow-lg mb-4 glass-card position-relative" role="alert" style="border-left: 5px solid #FF0844 !important; background: rgba(239, 68, 68, 0.15) !important;">
+    <div class="d-flex align-items-center">
+      <i class="fa-solid fa-circle-exclamation me-3 fs-4" style="color: #FF0844;"></i>
+      <div>
+        <strong style="color: #FF0844;">Alert!</strong>
+        <span class="ms-1" style="color: #F8FAFC;"><%= error_msg %></span>
+      </div>
+    </div>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if(typeof error !== 'undefined' && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show border-0 shadow-lg mb-4 glass-card position-relative" role="alert" style="border-left: 5px solid #FF0844 !important; background: rgba(239, 68, 68, 0.15) !important;">
+    <div class="d-flex align-items-center">
+      <i class="fa-solid fa-circle-exclamation me-3 fs-4" style="color: #FF0844;"></i>
+      <div>
+        <strong style="color: #FF0844;">Warning!</strong>
+        <span class="ms-1" style="color: #F8FAFC;"><%= error %></span>
+      </div>
+    </div>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>

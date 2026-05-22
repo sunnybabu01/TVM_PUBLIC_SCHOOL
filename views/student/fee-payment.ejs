@@ -1,0 +1,153 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="text-white font-weight-bold mb-1">Fee Invoices & Secure Payment Desk</h2>
+          <p class="text-secondary mb-0">Review pending invoices, pay outstanding school dues online, and download verified cash receipts.</p>
+        </div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg card-purple">
+            <span class="text-secondary font-weight-bold d-block mb-1">TOTAL OUTSTANDING DEBT</span>
+            <% 
+              const unpaidInvoices = invoices.filter(i => i.status === 'unpaid');
+              const unpaidSum = unpaidInvoices.reduce((acc, curr) => acc + curr.amount, 0);
+            %>
+            <h3 class="text-white display-6 font-weight-black mb-0">₹<%= unpaidSum %></h3>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="glass-card shadow-lg card-emerald">
+            <span class="text-secondary font-weight-bold d-block mb-1">TOTAL FEES PAID</span>
+            <% 
+              const paidInvoices = invoices.filter(i => i.status === 'paid');
+              const paidSum = paidInvoices.reduce((acc, curr) => acc + curr.amount, 0);
+            %>
+            <h3 class="text-white display-6 font-weight-black mb-0 text-success">₹<%= paidSum %></h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unpaid Invoices Registry -->
+      <div class="row mb-5">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4 text-warning">
+              <i class="fa-solid fa-file-invoice-dollar me-2"></i>Outstanding Invoices Registry
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Invoice / Billing Title</th>
+                    <th>Due Date</th>
+                    <th>Dues Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (unpaidInvoices.length === 0) { %>
+                    <tr>
+                      <td colspan="5" class="text-center py-4 text-success font-weight-bold">
+                        <i class="fa-solid fa-circle-check me-2"></i>All school fee dues successfully cleared. No outstanding invoices!
+                      </td>
+                    </tr>
+                  <% } else { %>
+                    <% unpaidInvoices.forEach(invoice => { %>
+                      <tr>
+                        <td class="font-weight-bold text-white"><%= invoice.title %></td>
+                        <td><%= formatDate(invoice.dueDate) %></td>
+                        <td class="text-white font-weight-bold">₹<%= invoice.amount %></td>
+                        <td><span class="status-badge status-late">UNPAID</span></td>
+                        <td>
+                          <a href="/student/checkout/<%= invoice._id %>" class="btn btn-tvm-primary py-1 px-3 fs-8">
+                            <i class="fa-solid fa-credit-card me-1"></i> Pay Online
+                          </a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paid Transactions History -->
+      <div class="row">
+        <div class="col-12">
+          <div class="glass-card shadow-lg">
+            <h5 class="text-white font-weight-bold mb-4 text-success">
+              <i class="fa-solid fa-history me-2"></i>Paid Transactions History
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="tvm-table">
+                <thead>
+                  <tr>
+                    <th>Receipt Reference ID</th>
+                    <th>Billing Description</th>
+                    <th>Disbursement Date</th>
+                    <th>Method</th>
+                    <th>Amount Paid</th>
+                    <th>Dossier Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (paidInvoices.length === 0) { %>
+                    <tr>
+                      <td colspan="7" class="text-center py-4 text-muted">No historical transactions logged yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% paidInvoices.forEach(invoice => { %>
+                      <tr>
+                        <td class="text-info font-weight-bold"><%= invoice.paymentId || 'N/A' %></td>
+                        <td class="text-white"><%= invoice.title %></td>
+                        <td><%= invoice.paidAt ? formatDate(invoice.paidAt) : 'N/A' %></td>
+                        <td><span class="badge bg-secondary"><%= invoice.paymentMethod %></span></td>
+                        <td class="text-white font-weight-bold">₹<%= invoice.amount %></td>
+                        <td><span class="status-badge status-present">VERIFIED</span></td>
+                        <td>
+                          <a href="/student/receipt/<%= invoice._id %>" class="btn btn-tvm-secondary py-1 px-3 fs-8 text-info">
+                            <i class="fa-solid fa-print me-1"></i> Print Receipt
+                          </a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

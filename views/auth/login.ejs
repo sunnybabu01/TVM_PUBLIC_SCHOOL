@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+<div class="login-body">
+  <!-- Moving gradient background lights -->
+  <div class="ambient-bubble bubble-1"></div>
+  <div class="ambient-bubble bubble-2"></div>
+  
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="glass-card login-card px-4 py-5 shadow-lg border border-secondary" style="background: rgba(15, 23, 42, 0.7);">
+      
+      <!-- Logo and Header -->
+      <div class="login-header mb-4">
+        <i class="fa-solid fa-graduation-cap text-info fs-1 mb-2"></i>
+        <h2 class="login-title">TVM Public School</h2>
+        <p class="text-secondary mb-0 mt-1" style="font-size: 0.9rem;">Patna ERP Portal Management</p>
+      </div>
+
+      <!-- Alert notifications -->
+      <%- include('../partials/messages') %>
+
+      <!-- Authentication Form -->
+      <form action="/login" method="POST" class="needs-validation">
+        
+        <!-- User ID -->
+        <div class="mb-3">
+          <label for="userId" class="glass-label"><i class="fa-regular fa-id-badge me-2 text-info"></i>User ID or Registered Email</label>
+          <input type="text" name="userId" id="userId" class="form-control glass-input" placeholder="e.g. ADM001, TCH20260001" required>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label for="password" class="glass-label"><i class="fa-solid fa-lock me-2 text-info"></i>Password</label>
+          <input type="password" name="password" id="password" class="form-control glass-input" placeholder="••••••••" required>
+        </div>
+
+        <!-- Role Selector -->
+        <div class="mb-4">
+          <label for="role" class="glass-label"><i class="fa-solid fa-users-gear me-2 text-info"></i>Access Role</label>
+          <select name="role" id="role" class="form-select glass-input text-white" style="background-color: var(--bg-slate);" required>
+            <option value="" disabled selected>Select Portal Access...</option>
+            <option value="student">Student Portal</option>
+            <option value="teacher">Teacher / Faculty</option>
+            <option value="admin">Director / Admin</option>
+          </select>
+        </div>
+
+        <!-- Action Links -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="form-check">
+            <input class="form-check-input bg-transparent border-secondary" type="checkbox" id="rememberMe">
+            <label class="form-check-label text-secondary" for="rememberMe" style="font-size: 0.85rem;">
+              Remember Me
+            </label>
+          </div>
+          <a href="/forgot-password" class="text-info text-decoration-none" style="font-size: 0.85rem;">Forgot Password?</a>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-tvm-primary w-100 py-3 text-uppercase font-weight-bold">
+          <i class="fa-solid fa-circle-right me-2"></i>Sign In Secured
+        </button>
+
+      </form>
+
+      <!-- Footer Info -->
+      <p class="text-center text-secondary mt-4 mb-0" style="font-size: 0.75rem;">
+        Security Notice: Public signup is closed. Contact Admin for credentials.
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

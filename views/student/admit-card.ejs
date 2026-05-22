@@ -1,0 +1,196 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  
+  <!-- Sidebar -->
+  <%- include('../partials/sidebar') %>
+  
+  <!-- Main Contents -->
+  <main class="main-content-tvm">
+    
+    <!-- Top Nav Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Session Messages -->
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0 d-print-block">
+      
+      <!-- Welcome Banner -->
+      <div class="row mb-4 d-print-none">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h2 class="text-white font-weight-bold mb-1">Print Examination Admit Card</h2>
+            <p class="text-secondary mb-0">Generate your dynamic hall ticket with class quiz listings and invigilator signature lanes.</p>
+          </div>
+          <button class="btn btn-tvm-primary" onclick="window.print()">
+            <i class="fa-solid fa-print me-2"></i>Print Admit Slip
+          </button>
+        </div>
+      </div>
+
+      <!-- Admit Card Slip Card Container -->
+      <div class="row justify-content-center">
+        <div class="col-xl-9">
+          
+          <!-- Sleek Professional Admit Card Slip -->
+          <div class="tvm-admit-slip-element glass-card border border-secondary p-5 shadow-lg" style="background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(3,7,18,0.95) 100%); border-radius: 20px; page-break-inside: avoid;">
+            
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-3 border-bottom border-secondary">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-info fs-1"></i>
+                <div>
+                  <h4 class="text-white font-weight-bold mb-1" style="letter-spacing: 1px;">TVM PUBLIC SCHOOL</h4>
+                  <small class="text-secondary">Administrative Office, Patna, Bihar &bull; HALL TICKET SLIP</small>
+                </div>
+              </div>
+              
+              <div class="text-end d-print-none">
+                <span class="status-badge status-present">
+                  <i class="fa-solid fa-circle-check me-1"></i>VERIFIED HALL ACCESS
+                </span>
+              </div>
+            </div>
+
+            <!-- Student demographic details row -->
+            <div class="row g-4 mb-4">
+              <div class="col-md-8">
+                <div class="row g-3">
+                  <div class="col-6">
+                    <small class="text-secondary font-weight-bold d-block fs-9">STUDENT NAME</small>
+                    <strong class="text-white fs-7"><%= student.name %></strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary font-weight-bold d-block fs-9">STUDENT REGISTRATION ID</small>
+                    <strong class="text-info fs-7"><%= student.studentId %></strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary font-weight-bold d-block fs-9">CLASSROOM STAGE</small>
+                    <strong class="text-white fs-7">Class <%= student.className %> - <%= student.section %></strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-secondary font-weight-bold d-block fs-9">ROLL NUMBER</strong class="text-white fs-7">
+                    <strong class="text-white fs-7">Roll No: <%= student.rollNumber %></strong>
+                  </div>
+                  <div class="col-12">
+                    <small class="text-secondary font-weight-bold d-block fs-9">FATHER'S NAME</small>
+                    <strong class="text-white fs-7"><%= student.fatherName || 'N/A' %></strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Avatar & QR -->
+              <div class="col-md-4 d-flex justify-content-md-end justify-content-center gap-3 align-items-center flex-wrap">
+                <img src="<%= student.photo || '/uploads/default-avatar.png' %>" alt="Student Avatar" class="rounded border border-secondary" style="width: 90px; height: 90px; object-fit: cover; background: transparent;">
+                <img src="<%= qrCodeDataUrl %>" alt="Verification QR Code" class="bg-white p-1 rounded" style="width: 90px; height: 90px;">
+              </div>
+            </div>
+
+            <!-- Exams schedule table -->
+            <h6 class="text-white font-weight-bold mb-3 mt-4"><i class="fa-solid fa-list-check text-info me-2"></i>Class Scheduled Quizzes / Examinations</h6>
+            <div class="table-responsive">
+              <table class="tvm-table table-bordered border-secondary">
+                <thead>
+                  <tr style="background: rgba(255, 255, 255, 0.02);">
+                    <th>Exam Subject</th>
+                    <th>Exam / Paper Title</th>
+                    <th>Exam Date</th>
+                    <th>Exam Timings</th>
+                    <th>Duration</th>
+                    <th class="d-print-table-cell">Invigilator Sign</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (exams.length === 0) { %>
+                    <tr>
+                      <td colspan="6" class="text-center py-4 text-muted">No upcoming exams currently scheduled for Class <%= student.className %>.</td>
+                    </tr>
+                  <% } else { %>
+                    <% exams.forEach(exam => { %>
+                      <tr>
+                        <td class="text-white font-weight-bold"><%= exam.subject %></td>
+                        <td><%= exam.title %></td>
+                        <td><%= new Date(exam.examDate).toLocaleDateString('en-IN') %></td>
+                        <td><%= new Date(exam.examDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) %></td>
+                        <td><%= exam.durationMinutes %> Min</td>
+                        <td class="d-print-table-cell" style="width: 130px; height: 40px; border-left: 1px solid rgba(255,255,255,0.07);"></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Rules & directives -->
+            <div class="p-3 rounded border border-secondary mt-4 fs-8 text-secondary" style="background: rgba(255, 255, 255, 0.01);">
+              <h6 class="text-white font-weight-bold mb-2 fs-7"><i class="fa-solid fa-circle-exclamation text-warning me-2"></i>Important Exam Directives</h6>
+              <ol class="mb-0 ps-3">
+                <li>Students must carry this print-ready Hall Ticket Slip and their verified TVM Student ID Card to every quiz session.</li>
+                <li>Reach the assigned classroom/examination hall at least 15 minutes before the scheduled exam starts.</li>
+                <li>Digital smart watches, calculators, text pamphlets, or unauthorized electronic gear are strictly forbidden.</li>
+                <li>Any student detected using unfair means will be subject to immediate disciplinary actions by the TVM Director.</li>
+              </ol>
+            </div>
+
+            <!-- Signature lanes -->
+            <div class="row mt-5 pt-4 d-flex justify-content-between text-center text-secondary fs-8">
+              <div class="col-md-4 mb-3">
+                <hr class="border-secondary mx-auto mb-2" style="width: 150px;">
+                <span>Student's Signature</span>
+              </div>
+              <div class="col-md-4 mb-3">
+                <hr class="border-secondary mx-auto mb-2" style="width: 150px;">
+                <span>Invigilator's Signature</span>
+              </div>
+              <div class="col-md-4">
+                <hr class="border-secondary mx-auto mb-2" style="width: 150px;">
+                <span>Controller of Exams</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Print overrides for Hall Ticket format -->
+<style>
+  @media print {
+    body, html {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    .tvm-admit-slip-element {
+      background: #fff !important;
+      border: 2px solid #000 !important;
+      box-shadow: none !important;
+      color: #000 !important;
+      padding: 30px !important;
+    }
+    .tvm-admit-slip-element .text-white {
+      color: #000 !important;
+    }
+    .tvm-admit-slip-element .text-secondary,
+    .tvm-admit-slip-element .text-info {
+      color: #333 !important;
+    }
+    .tvm-admit-slip-element .border-secondary {
+      border-color: #000 !important;
+    }
+    .tvm-admit-slip-element .tvm-table th {
+      background: #f1f5f9 !important;
+      border: 1px solid #000 !important;
+      color: #000 !important;
+    }
+    .tvm-admit-slip-element .tvm-table td {
+      border: 1px solid #000 !important;
+      color: #000 !important;
+    }
+  }
+</style>
+
+<%- include('../partials/footer') %>

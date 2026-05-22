@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+
+<!-- Top Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-tvm sticky-top">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-tvm" href="/">
+      <i class="fa-solid fa-graduation-cap text-info me-2"></i>TVM PUBLIC SCHOOL
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#publicNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="publicNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/about">About</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/facilities">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/faculty">Faculty</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm active" href="/gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/events">Events</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-tvm" href="/contact">Contact</a></li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-tvm-primary px-4" href="/login"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>ERP Portal</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Header -->
+<section class="py-5" style="background: rgba(255, 255, 255, 0.01); border-bottom: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <h1 class="text-white font-weight-bold mb-3">Photo Gallery</h1>
+    <p class="text-secondary mb-0">Snapshots of student activities, inter-school cultural fests, science exhibitions, and graduation events.</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-5">
+  <div class="container">
+    <% if (galleryItems.length === 0) { %>
+      <!-- Fallback curated school photos -->
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-2 shadow-lg border border-secondary">
+            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80" alt="Students in Classroom" class="img-fluid rounded-3 mb-3 w-100" style="height: 240px; object-fit: cover;">
+            <h6 class="text-white font-weight-bold mb-1">Modern Smart Classrooms</h6>
+            <small class="text-muted">Academic Excellence</small>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-2 shadow-lg border border-secondary">
+            <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=600&q=80" alt="Annual Science Fair" class="img-fluid rounded-3 mb-3 w-100" style="height: 240px; object-fit: cover;">
+            <h6 class="text-white font-weight-bold mb-1">Annual Science Fair</h6>
+            <small class="text-muted">Innovation and Creativity</small>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-2 shadow-lg border border-secondary">
+            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80" alt="Graduation Day" class="img-fluid rounded-3 mb-3 w-100" style="height: 240px; object-fit: cover;">
+            <h6 class="text-white font-weight-bold mb-1">Senior Graduation Ceremony</h6>
+            <small class="text-muted">Class Milestones</small>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="row g-4">
+        <% galleryItems.forEach(item => { %>
+          <div class="col-md-6 col-lg-4">
+            <div class="glass-card p-2 shadow-lg border border-secondary h-100">
+              <img src="<%= item.image || '/uploads/default-event.jpg' %>" alt="<%= item.title %> event image" class="img-fluid rounded-3 mb-3 w-100" style="height: 240px; object-fit: cover;">
+              <h6 class="text-white font-weight-bold mb-1"><%= item.title %></h6>
+              <small class="text-muted"><%= item.description %></small>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5" style="border-top: 1px solid var(--border-glass);">
+  <div class="container text-center">
+    <p class="text-secondary mb-0" style="font-size: 0.8rem;">&copy; 2026 TVM Public School Patna. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<%- include('../partials/footer') %>
