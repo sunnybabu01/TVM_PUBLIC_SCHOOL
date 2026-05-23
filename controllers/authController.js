@@ -447,6 +447,87 @@ const getLogout = (req, res) => {
   }
 };
 
+/**
+ * Render Student Self-Registration Page
+ */
+const getRegister = (req, res) => {
+  res.render('auth/register', {
+    title: 'Register | TVM Public School ERP',
+    user: null
+  });
+};
+
+/**
+ * Handle Student Self-Registration Submission
+ */
+const postRegister = async (req, res, next) => {
+  const { name, email, className, section, rollNumber, fatherName, password, confirmPassword } = req.body;
+
+  if (!name || !email || !className || !section || !rollNumber || !fatherName || !password || !confirmPassword) {
+    req.flash('error_msg', 'Please fill in all fields.');
+    return res.redirect('/register');
+  }
+
+  if (password !== confirmPassword) {
+    req.flash('error_msg', 'Passwords do not match.');
+    return res.redirect('/register');
+  }
+
+  try {
+    // Check if email already exists in Student collection
+    const emailExists = await Student.findOne({ email: email.toLowerCase() });
+    if (emailExists) {
+      req.flash('error_msg', 'An account with this email already exists.');
+      return res.redirect('/register');
+    }
+
+    // Auto-generate next Student ID (STDYYYYNNNN)
+    const year = new Date().getFullYear();
+    const count = await Student.countDocuments();
+    const nextSeq = (count + 1).toString().padStart(4, '0');
+    const studentId = `STD${year}${nextSeq}`;
+
+    // Create student (pre-save hook in Student.js handles bcrypt password hashing)
+    const newStudent = new Student({
+      studentId,
+      password,
+      email: email.toLowerCase(),
+      name,
+      className,
+      section,
+      rollNumber: parseInt(rollNumber),
+      fatherName
+    });
+
+    await newStudent.save();
+
+    // Send credentials email in background
+    try {
+      await sendEmail({
+        to: newStudent.email,
+        subject: 'Welcome to TVM Public School ERP Portal',
+        html: `
+          <h3>Welcome ${name}!</h3>
+          <p>Your self-registration is successful! Here are your secured credentials to log in to our ERP Portal:</p>
+          <p><strong>Login URL:</strong> http://localhost:3000/login</p>
+          <p><strong>Student ID:</strong> ${studentId}</p>
+          <p><strong>Password:</strong> The password you created during signup</p>
+          <p>You can use these details to secure your session and start accessing features.</p>
+        `
+      });
+    } catch (e) {
+      console.warn('Could not send registration email:', e.message);
+    }
+
+    req.flash('success_msg', `Registration successful! Your generated Student ID is: ${studentId}. Please use it to log in.`);
+    res.redirect('/login');
+
+  } catch (error) {
+    req.flash('error_msg', 'Registration failed: ' + error.message);
+    res.redirect('/register');
+  }
+};
+
 module.exports = {
   getLogin,
   postLogin,
@@ -456,5 +537,7 @@ module.exports = {
   postForgotPassword,
   getResetPassword,
   postResetPassword,
-  getLogout
+  getLogout,
+  getRegister,
+  postRegister
 };

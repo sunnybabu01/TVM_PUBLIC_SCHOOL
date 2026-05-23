@@ -47,7 +47,12 @@
                 <% students.forEach(student => { %>
                   <tr>
                     <td class="text-white font-weight-bold"><%= student.studentId %></td>
-                    <td><%= student.name %></td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <img src="<%= student.photo || '/uploads/default-avatar.png' %>" alt="<%= student.name %>" class="rounded-circle border border-secondary" style="width: 32px; height: 32px; object-fit: cover; background: transparent;">
+                        <span><%= student.name %></span>
+                      </div>
+                    </td>
                     <td><%= student.className %> - <%= student.section %></td>
                     <td><%= student.rollNumber %></td>
                     <td><%= student.fatherName %></td>
@@ -70,6 +75,7 @@
                                 data-roll="<%= student.rollNumber %>"
                                 data-father="<%= student.fatherName %>"
                                 data-status="<%= student.status %>"
+                                data-photo="<%= student.photo %>"
                                 data-bs-toggle="modal" 
                                 data-bs-target="#editStudentModal"
                                 title="Edit Records">
@@ -104,9 +110,20 @@
         <h5 class="modal-title text-white font-weight-bold" id="addStudentLabel"><i class="fa-solid fa-user-plus text-info me-2"></i>Register New Student</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/admin/students/add" method="POST">
+      <form action="/admin/students/add" method="POST" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="row g-3">
+            <div class="col-12 text-center mb-3">
+              <div class="position-relative d-inline-block mx-auto mb-2">
+                <img src="/uploads/default-avatar.png" id="addPhotoPreview" alt="Student Photo" class="rounded-circle border border-info img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; background: transparent;">
+                <label for="addPhoto" class="position-absolute bottom-0 end-0 bg-info text-dark rounded-circle border border-dark p-1 cursor-pointer hover-scale" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <i class="fa-solid fa-camera" style="font-size: 0.8rem;"></i>
+                </label>
+                <input type="file" name="photo" id="addPhoto" accept="image/png, image/jpeg, image/jpg" class="d-none">
+              </div>
+              <small class="text-muted d-block" style="font-size: 0.75rem;">Upload Student Photo (Optional)</small>
+            </div>
+
             <div class="col-12">
               <label for="addName" class="glass-label">Student Full Name</label>
               <input type="text" name="name" id="addName" class="form-control glass-input" placeholder="e.g. Rahul Verma" required>
@@ -167,9 +184,20 @@
         <h5 class="modal-title text-white font-weight-bold" id="editStudentLabel"><i class="fa-solid fa-user-pen text-info me-2"></i>Modify Student Records</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="editForm" action="" method="POST">
+      <form id="editForm" action="" method="POST" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="row g-3">
+            <div class="col-12 text-center mb-3">
+              <div class="position-relative d-inline-block mx-auto mb-2">
+                <img src="/uploads/default-avatar.png" id="editPhotoPreview" alt="Student Photo" class="rounded-circle border border-info img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; background: transparent;">
+                <label for="editPhoto" class="position-absolute bottom-0 end-0 bg-info text-dark rounded-circle border border-dark p-1 cursor-pointer hover-scale" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <i class="fa-solid fa-camera" style="font-size: 0.8rem;"></i>
+                </label>
+                <input type="file" name="photo" id="editPhoto" accept="image/png, image/jpeg, image/jpg" class="d-none">
+              </div>
+              <small class="text-muted d-block" style="font-size: 0.75rem;">Modify Student Photo (Optional)</small>
+            </div>
+
             <div class="col-12">
               <label for="editName" class="glass-label">Student Full Name</label>
               <input type="text" name="name" id="editName" class="form-control glass-input" required>
@@ -236,6 +264,7 @@
     const editRoll = document.getElementById('editRoll');
     const editFather = document.getElementById('editFather');
     const editStatus = document.getElementById('editStatus');
+    const editPhotoPreview = document.getElementById('editPhotoPreview');
 
     editButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -247,6 +276,7 @@
         const roll = btn.getAttribute('data-roll');
         const father = btn.getAttribute('data-father');
         const status = btn.getAttribute('data-status');
+        const photo = btn.getAttribute('data-photo');
 
         // Dynamically assign form action route
         editForm.action = `/admin/students/edit/${id}`;
@@ -259,7 +289,42 @@
         editRoll.value = roll;
         editFather.value = father;
         editStatus.value = status;
+        editPhotoPreview.src = photo || '/uploads/default-avatar.png';
       });
+    });
+
+    // Client-side real-time preview for Add student modal
+    document.getElementById('addPhoto').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size exceeds 2MB limit! Please select a smaller photo.');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('addPhotoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Client-side real-time preview for Edit student modal
+    document.getElementById('editPhoto').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size exceeds 2MB limit! Please select a smaller photo.');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('editPhotoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
     });
   });
 </script>

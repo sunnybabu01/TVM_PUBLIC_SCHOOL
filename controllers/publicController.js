@@ -1,6 +1,7 @@
 const Event = require('../models/Event');
 const Teacher = require('../models/Teacher');
 const Notification = require('../models/Notification');
+const Topper = require('../models/Topper');
 
 /**
  * Render Public Home Page
@@ -9,10 +10,13 @@ const getHome = async (req, res, next) => {
   try {
     const featuredEvents = await Event.find({ isFeatured: true }).sort({ eventDate: -1 }).limit(3);
     const announcements = await Notification.find({ targetRole: 'all' }).sort({ createdAt: -1 }).limit(5);
+    const toppers = await Topper.find({ isFeatured: true }).sort({ createdAt: -1 });
+    
     res.render('public/index', {
       title: 'TVM Public School, Patna',
       featuredEvents,
       announcements,
+      toppers,
       user: req.session ? req.session.user : null
     });
   } catch (error) {

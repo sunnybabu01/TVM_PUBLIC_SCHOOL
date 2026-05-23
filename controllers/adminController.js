@@ -1,6 +1,7 @@
 const Admin = require('../models/Admin');
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
+const Topper = require('../models/Topper');
 const Attendance = require('../models/Attendance');
 const Fee = require('../models/Fee');
 const Exam = require('../models/Exam');
@@ -39,6 +40,7 @@ const getDashboard = async (req, res, next) => {
     const studentCount = await Student.countDocuments();
     const teacherCount = await Teacher.countDocuments();
     const booksCount = await Library.countDocuments();
+    const toppersCount = await Topper.countDocuments();
     
     // Sum paid fee invoices
     const paidFeesResult = await Fee.aggregate([
@@ -71,6 +73,7 @@ const getDashboard = async (req, res, next) => {
     // Recent items
     const recentStudents = await Student.find().sort({ createdAt: -1 }).limit(5);
     const recentNotifications = await Notification.find().sort({ createdAt: -1 }).limit(5);
+    const recentToppers = await Topper.find().sort({ createdAt: -1 }).limit(3);
 
     res.render('admin/dashboard', {
       title: 'Admin Dashboard | TVM ERP',
@@ -79,14 +82,16 @@ const getDashboard = async (req, res, next) => {
         students: studentCount,
         teachers: teacherCount,
         books: booksCount,
-        fees: totalCollectedFees
+        fees: totalCollectedFees,
+        toppers: toppersCount
       },
       chart: {
         labels: chartLabels.length > 0 ? chartLabels : ['No Data'],
         data: chartData.length > 0 ? chartData : [0]
       },
       recentStudents,
-      recentNotifications
+      recentNotifications,
+      recentToppers
     });
   } catch (error) {
     next(error);
@@ -116,15 +121,21 @@ const postAddStudent = async (req, res, next) => {
     const studentId = await generateStudentId();
     const defaultPassword = password || 'student123'; // Seed default password
 
+    let photo = '/uploads/default-avatar.png';
+    if (req.file) {
+      photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    }
+
     const newStudent = new Student({
       studentId,
       password: defaultPassword,
-      email: email.toLowerCase(),
+      email: email ? email.toLowerCase() : '',
       name,
       className,
       section,
-      rollNumber: parseInt(rollNumber),
-      fatherName
+      rollNumber: rollNumber ? parseInt(rollNumber) : undefined,
+      fatherName,
+      photo
     });
 
     await newStudent.save();
@@ -160,15 +171,21 @@ const postEditStudent = async (req, res, next) => {
   const { name, email, className, section, rollNumber, fatherName, status } = req.body;
 
   try {
-    await Student.findByIdAndUpdate(id, {
+    const updateData = {
       name,
-      email: email.toLowerCase(),
+      email: email ? email.toLowerCase() : '',
       className,
       section,
-      rollNumber: parseInt(rollNumber),
+      rollNumber: rollNumber ? parseInt(rollNumber) : undefined,
       fatherName,
       status
-    }, { runValidators: true });
+    };
+
+    if (req.file) {
+      updateData.photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    }
+
+    await Student.findByIdAndUpdate(id, updateData, { runValidators: true });
 
     req.flash('success_msg', 'Student records updated successfully.');
     res.redirect('/admin/students');
@@ -215,7 +232,7 @@ const postAddTeacher = async (req, res, next) => {
     const newTeacher = new Teacher({
       teacherId,
       password: defaultPassword,
-      email: email.toLowerCase(),
+      email: email ? email.toLowerCase() : '',
       name,
       subject,
       phone
@@ -255,7 +272,7 @@ const postEditTeacher = async (req, res, next) => {
   try {
     await Teacher.findByIdAndUpdate(id, {
       name,
-      email: email.toLowerCase(),
+      email: email ? email.toLowerCase() : '',
       subject,
       phone
     }, { runValidators: true });
@@ -621,7 +638,7 @@ const postUpdateProfile = async (req, res, next) => {
 
     // Handle Photo Upload
     if (req.file) {
-      admin.photo = '/uploads/profiles/' + req.file.filename;
+      admin.photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     }
 
     await admin.save();
@@ -636,6 +653,94 @@ const postUpdateProfile = async (req, res, next) => {
   } catch (error) {
     req.flash('error_msg', 'Failed to update profile: ' + error.message);
     res.redirect('/admin/profile');
+  }
+};
+
+/**
+ * TOPPER MANAGEMENT
+ */
+const getToppers = async (req, res, next) => {
+  try {
+    const toppers = await Topper.find().sort({ createdAt: -1 });
+    res.render('admin/toppers', {
+      title: 'Manage Toppers | TVM ERP',
+      user: req.session.user,
+      toppers
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const postAddTopper = async (req, res, next) => {
+  const { name, className, marks, testimonial } = req.body;
+
+  if (!name || !className || !marks || !testimonial) {
+    req.flash('error_msg', 'Please fill in all details for the academic topper.');
+    return res.redirect('/admin/toppers');
+  }
+
+  if (!req.file) {
+    req.flash('error_msg', 'Topper profile photo is required.');
+    return res.redirect('/admin/toppers');
+  }
+
+  try {
+    const base64Photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+    const newTopper = new Topper({
+      name,
+      className,
+      marks,
+      photo: base64Photo,
+      testimonial
+    });
+
+    await newTopper.save();
+
+    req.flash('success_msg', `Academic Topper ${name} registered successfully!`);
+    res.redirect('/admin/toppers');
+  } catch (error) {
+    req.flash('error_msg', 'Failed to add topper: ' + error.message);
+    res.redirect('/admin/toppers');
+  }
+};
+
+const postEditTopper = async (req, res, next) => {
+  const { id } = req.params;
+  const { name, className, marks, testimonial, isFeatured } = req.body;
+
+  try {
+    const updateData = {
+      name,
+      className,
+      marks,
+      testimonial,
+      isFeatured: isFeatured === 'true'
+    };
+
+    if (req.file) {
+      updateData.photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    }
+
+    await Topper.findByIdAndUpdate(id, updateData, { runValidators: true });
+
+    req.flash('success_msg', 'Topper record updated successfully.');
+    res.redirect('/admin/toppers');
+  } catch (error) {
+    req.flash('error_msg', 'Failed to edit topper: ' + error.message);
+    res.redirect('/admin/toppers');
+  }
+};
+
+const postDeleteTopper = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await Topper.findByIdAndDelete(id);
+    req.flash('success_msg', 'Topper record removed from the portal.');
+    res.redirect('/admin/toppers');
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -662,5 +767,9 @@ module.exports = {
   getNotifications,
   postCreateNotification,
   getProfile,
-  postUpdateProfile
+  postUpdateProfile,
+  getToppers,
+  postAddTopper,
+  postEditTopper,
+  postDeleteTopper
 };

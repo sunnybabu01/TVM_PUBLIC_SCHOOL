@@ -1,27 +1,7 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
-// Ensure destination directories exist
-const uploadDir = path.join(__dirname, '../public/uploads/profiles');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Storage Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    // Generate secure, unique filename: [role]-[userId]-[timestamp].[ext]
-    const role = (req.session && req.session.user) ? req.session.user.role : 'user';
-    const userId = (req.session && req.session.user) ? req.session.user.id : 'unknown';
-    const fileExtension = path.extname(file.originalname).toLowerCase();
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, `${role}-${userId}-${uniqueSuffix}${fileExtension}`);
-  }
-});
+// Memory Storage Configuration
+const storage = multer.memoryStorage();
 
 // File Filter for Images
 const fileFilter = (req, file, cb) => {

@@ -72,6 +72,7 @@
               <button type="button" data-bs-target="#tvmSchoolCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Sports Championship"></button>
               <button type="button" data-bs-target="#tvmSchoolCarousel" data-bs-slide-to="1" aria-label="Science Innovation"></button>
               <button type="button" data-bs-target="#tvmSchoolCarousel" data-bs-slide-to="2" aria-label="Cultural Festival"></button>
+              <button type="button" data-bs-target="#tvmSchoolCarousel" data-bs-slide-to="3" aria-label="Academic Toppers"></button>
             </div>
             
             <!-- Slides -->
@@ -101,6 +102,15 @@
                 <div class="carousel-caption carousel-caption-glass text-start px-4">
                   <h5 class="text-white font-weight-bold mb-1"><i class="fa-solid fa-guitar text-danger me-2"></i>Annual Cultural Day</h5>
                   <p class="text-secondary small mb-0">Expressing artistic grace and cultural heritage through captivating traditional dance, theatrical acts, and musical symphonies.</p>
+                </div>
+              </div>
+
+              <!-- Slide 4: Academic Topper -->
+              <div class="carousel-item">
+                <img src="/images/student_star.png" class="d-block w-100" alt="TVM Academic Topper" style="object-fit: cover; height: 420px;">
+                <div class="carousel-caption carousel-caption-glass text-start px-4">
+                  <h5 class="text-white font-weight-bold mb-1"><i class="fa-solid fa-star text-warning me-2"></i>Inspiring Academic Excellence</h5>
+                  <p class="text-secondary small mb-0">Our students achieve stellar academic landmarks, securing state-level ranks and top scores in secondary board examinations.</p>
                 </div>
               </div>
               
@@ -191,6 +201,69 @@
         </div>
       </div>
       
+    </div>
+  </div>
+</section>
+
+<!-- Academic Toppers / Shining Stars Section -->
+<section class="py-5" style="border-top: 1px solid var(--border-glass);">
+  <div class="container text-center mb-5 animate-fade-in-up">
+    <span class="badge text-uppercase mb-2 px-3 py-1 font-weight-bold" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.2);">Shining Stars</span>
+    <h2 class="text-white font-weight-black" style="font-weight: 800;">Academic Excellence & Stars of TVM</h2>
+    <p class="text-secondary col-md-8 mx-auto">Celebrating the outstanding achievements of our brilliant students who make TVM Public School proud in both academics and innovation.</p>
+  </div>
+
+  <div class="container animate-fade-in-up delay-100">
+    <div class="row justify-content-center g-4">
+      <% if (toppers && toppers.length > 0) { %>
+        <% toppers.forEach(topper => { %>
+          <div class="col-lg-6 col-md-12 d-flex">
+            <div class="glass-card hover-glow-card card-cyan p-4 text-start w-100 d-flex flex-column justify-content-between" style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: 20px;">
+              <div class="row align-items-center g-3 h-100">
+                <div class="col-md-5 text-center d-flex align-items-center justify-content-center h-100">
+                  <img src="<%= topper.photo %>" alt="<%= topper.name %>" class="img-fluid rounded shadow-lg border border-secondary" style="max-height: 220px; object-fit: cover; border-radius: 16px !important; width: 100%;">
+                </div>
+                <div class="col-md-7 d-flex flex-column justify-content-between h-100">
+                  <div>
+                    <span class="badge bg-info bg-opacity-20 text-info mb-2"><i class="fa-solid fa-trophy text-warning me-1"></i>Board Topper</span>
+                    <h3 class="text-white font-weight-bold mb-1" style="font-size: 1.4rem;"><%= topper.name %></h3>
+                    <p class="text-secondary font-weight-bold mb-2" style="color: var(--accent-cyan) !important; font-size: 0.9rem;"><%= topper.className %> | <%= topper.marks %></p>
+                    <p class="text-secondary mb-3" style="line-height: 1.6; font-size: 0.85rem; font-style: italic;">
+                      "<%= topper.testimonial %>"
+                    </p>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 mt-auto">
+                    <i class="fa-solid fa-quote-left text-info fs-4 opacity-25"></i>
+                    <small class="text-muted"><%= topper.name %>, TVM Class of <%= new Date(topper.createdAt).getFullYear() %></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-lg-8">
+          <div class="glass-card hover-glow-card card-cyan p-4 p-md-5 text-start" style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glass); border-radius: 20px;">
+            <div class="row align-items-center g-4">
+              <div class="col-md-5 text-center">
+                <img src="/images/student_star.png" alt="TVM Academic Topper" class="img-fluid rounded shadow-lg border border-secondary" style="max-height: 280px; object-fit: cover; border-radius: 16px !important;">
+              </div>
+              <div class="col-md-7">
+                <span class="badge bg-info bg-opacity-20 text-info mb-2"><i class="fa-solid fa-trophy text-warning me-1"></i>CBSE Board Topper</span>
+                <h3 class="text-white font-weight-bold mb-1">Aarav Sharma</h3>
+                <p class="text-secondary font-weight-bold mb-3" style="color: var(--accent-cyan) !important;">Class X | 98.6% CBSE Board Examinations</p>
+                <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 0.95rem;">
+                  "TVM Public School's interactive smart labs and outstanding mentor faculty gave me the perfect foundation to excel in my board exams while allowing me to actively pursue robotics and coding club projects."
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-quote-left text-info fs-3 opacity-25"></i>
+                  <small class="text-muted">Aarav Sharma, TVM Class of 2026</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
     </div>
   </div>
 </section>

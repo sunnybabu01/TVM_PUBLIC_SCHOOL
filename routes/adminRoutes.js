@@ -24,8 +24,24 @@ router.get('/dashboard', adminController.getDashboard);
 
 // Students CRUD
 router.get('/students', adminController.getStudents);
-router.post('/students/add', adminController.postAddStudent);
-router.post('/students/edit/:id', adminController.postEditStudent);
+router.post('/students/add', (req, res, next) => {
+  upload.single('photo')(req, res, (err) => {
+    if (err) {
+      req.flash('error_msg', err.message);
+      return res.redirect('/admin/students');
+    }
+    next();
+  });
+}, adminController.postAddStudent);
+router.post('/students/edit/:id', (req, res, next) => {
+  upload.single('photo')(req, res, (err) => {
+    if (err) {
+      req.flash('error_msg', err.message);
+      return res.redirect('/admin/students');
+    }
+    next();
+  });
+}, adminController.postEditStudent);
 router.post('/students/delete/:id', adminController.postDeleteStudent);
 
 // Teachers CRUD
@@ -55,5 +71,27 @@ router.post('/inventory/add', adminController.postAddInventory);
 // Notification System
 router.get('/notifications', adminController.getNotifications);
 router.post('/notifications/create', adminController.postCreateNotification);
+
+// Topper Management System
+router.get('/toppers', adminController.getToppers);
+router.post('/toppers/add', (req, res, next) => {
+  upload.single('photo')(req, res, (err) => {
+    if (err) {
+      req.flash('error_msg', err.message);
+      return res.redirect('/admin/toppers');
+    }
+    next();
+  });
+}, adminController.postAddTopper);
+router.post('/toppers/edit/:id', (req, res, next) => {
+  upload.single('photo')(req, res, (err) => {
+    if (err) {
+      req.flash('error_msg', err.message);
+      return res.redirect('/admin/toppers');
+    }
+    next();
+  });
+}, adminController.postEditTopper);
+router.post('/toppers/delete/:id', adminController.postDeleteTopper);
 
 module.exports = router;

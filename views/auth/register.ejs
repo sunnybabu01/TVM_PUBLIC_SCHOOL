@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<div class="login-body">
+  <!-- Moving gradient background lights -->
+  <div class="ambient-bubble bubble-1"></div>
+  <div class="ambient-bubble bubble-2"></div>
+  
+  <div class="container d-flex justify-content-center align-items-center py-5">
+    <div class="glass-card login-card px-4 py-5 shadow-lg border border-secondary" style="background: rgba(15, 23, 42, 0.7); max-width: 500px; width: 100%;">
+      
+      <!-- Logo and Header -->
+      <div class="login-header mb-4">
+        <i class="fa-solid fa-user-plus text-info fs-1 mb-2"></i>
+        <h2 class="login-title">Student Registration</h2>
+        <p class="text-secondary mb-0 mt-1" style="font-size: 0.9rem;">TVM Public School ERP Portal</p>
+      </div>
+
+      <!-- Alert notifications -->
+      <%- include('../partials/messages') %>
+
+      <!-- Registration Form -->
+      <form action="/register" method="POST" class="needs-validation" onsubmit="return validatePasswordMatch()">
+        
+        <!-- Name -->
+        <div class="mb-3">
+          <label for="name" class="glass-label"><i class="fa-regular fa-user me-2 text-info"></i>Student Full Name</label>
+          <input type="text" name="name" id="name" class="form-control glass-input" placeholder="e.g. Priyanshu Raj" required>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="glass-label"><i class="fa-regular fa-envelope me-2 text-info"></i>Email Address</label>
+          <input type="email" name="email" id="email" class="form-control glass-input" placeholder="e.g. student@gmail.com" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <!-- Class Selection -->
+          <div class="col-md-6">
+            <label for="className" class="glass-label"><i class="fa-solid fa-graduation-cap me-2 text-info"></i>Class</label>
+            <select name="className" id="className" class="form-select glass-input text-white" style="background-color: var(--bg-slate);" required>
+              <option value="" disabled selected>Select...</option>
+              <option value="1">Class 1</option>
+              <option value="2">Class 2</option>
+              <option value="5">Class 5</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+            </select>
+          </div>
+
+          <!-- Section -->
+          <div class="col-md-6">
+            <label for="section" class="glass-label"><i class="fa-solid fa-school me-2 text-info"></i>Section</label>
+            <input type="text" name="section" id="section" class="form-control glass-input" placeholder="e.g. A" required>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <!-- Roll Number -->
+          <div class="col-md-6">
+            <label for="rollNumber" class="glass-label"><i class="fa-solid fa-list-ol me-2 text-info"></i>Roll Number</label>
+            <input type="number" name="rollNumber" id="rollNumber" class="form-control glass-input" placeholder="e.g. 21" required>
+          </div>
+
+          <!-- Father's Name -->
+          <div class="col-md-6">
+            <label for="fatherName" class="glass-label"><i class="fa-solid fa-person me-2 text-info"></i>Father's Name</label>
+            <input type="text" name="fatherName" id="fatherName" class="form-control glass-input" placeholder="Father's name" required>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <!-- Password -->
+          <div class="col-md-6">
+            <label for="password" class="glass-label"><i class="fa-solid fa-lock me-2 text-info"></i>Password</label>
+            <input type="password" name="password" id="password" class="form-control glass-input" placeholder="••••••••" required>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="col-md-6">
+            <label for="confirmPassword" class="glass-label"><i class="fa-solid fa-lock-open me-2 text-info"></i>Confirm</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control glass-input" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-tvm-primary w-100 py-3 text-uppercase font-weight-bold mb-3">
+          <i class="fa-solid fa-user-plus me-2"></i>Submit & Register
+        </button>
+
+      </form>
+
+      <!-- Footer Info -->
+      <p class="text-center text-secondary mt-3 mb-0" style="font-size: 0.85rem;">
+        Already registered? <a href="/login" class="text-info text-decoration-none font-weight-bold">Sign In Secured</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function validatePasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    if (password !== confirmPassword) {
+      alert('Passwords do not match! Please verify your password entry.');
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<%- include('../partials/footer') %>

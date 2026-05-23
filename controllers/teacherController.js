@@ -367,7 +367,7 @@ const postUpdateProfile = async (req, res, next) => {
 
     // Handle Photo Upload
     if (req.file) {
-      teacher.photo = '/uploads/profiles/' + req.file.filename;
+      teacher.photo = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     }
 
     await teacher.save();

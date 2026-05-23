@@ -29,7 +29,7 @@
       <!-- Quick Statistics Cards Grid -->
       <div class="row g-4 mb-5">
         <!-- Students -->
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl">
           <div class="glass-card h-100 card-cyan shadow-lg">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-secondary font-weight-bold">STUDENTS ENROLLED</span>
@@ -41,7 +41,7 @@
         </div>
         
         <!-- Faculty -->
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl">
           <div class="glass-card h-100 card-purple shadow-lg">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-secondary font-weight-bold">TEACHING FACULTY</span>
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Library -->
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl">
           <div class="glass-card h-100 card-emerald shadow-lg">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-secondary font-weight-bold">BOOKS CATALOGUE</span>
@@ -65,7 +65,7 @@
         </div>
 
         <!-- Total Fees -->
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl">
           <div class="glass-card h-100 shadow-lg">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-secondary font-weight-bold">FEES COLLECTED</span>
@@ -73,6 +73,18 @@
             </div>
             <h3 class="text-white display-6 font-weight-black mb-1">₹<%= stats.fees %></h3>
             <span class="text-info font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-receipt me-1"></i>Verified Online/Offline</span>
+          </div>
+        </div>
+
+        <!-- Toppers -->
+        <div class="col-md-6 col-xl">
+          <div class="glass-card h-100 card-cyan shadow-lg" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(217, 119, 6, 0.15) 100%); border: 1px solid rgba(251, 191, 36, 0.3);">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-secondary font-weight-bold" style="color: #FBBF24 !important;">ACADEMIC TOPPERS</span>
+              <i class="fa-solid fa-trophy text-warning fs-4"></i>
+            </div>
+            <h3 class="text-white display-6 font-weight-black mb-1"><%= stats.toppers %></h3>
+            <span class="text-warning font-weight-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-star me-1"></i>Shining Stars</span>
           </div>
         </div>
       </div>
@@ -104,8 +116,8 @@
                 <span><i class="fa-solid fa-user-tie me-2"></i>Provision Teacher ID</span>
                 <i class="fa-solid fa-chevron-right text-info"></i>
               </a>
-              <a href="/admin/fees" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
-                <span><i class="fa-solid fa-file-invoice me-2"></i>Issue Class Billing</span>
+              <a href="/admin/toppers" class="btn btn-tvm-secondary w-100 py-3 text-start d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-trophy me-2"></i>Manage Board Toppers</span>
                 <i class="fa-solid fa-chevron-right text-info"></i>
               </a>
             </div>
@@ -116,7 +128,7 @@
       <!-- Recents Grid -->
       <div class="row g-4">
         <!-- Recent Students -->
-        <div class="col-md-6">
+        <div class="col-md-6 col-xl-4">
           <div class="glass-card shadow-lg h-100">
             <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-user-graduate text-info me-2"></i>Recently Enrolled Students</h5>
             <div class="table-responsive">
@@ -149,7 +161,7 @@
         </div>
 
         <!-- Recent Notices -->
-        <div class="col-md-6">
+        <div class="col-md-6 col-xl-4">
           <div class="glass-card shadow-lg h-100">
             <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-bullhorn text-warning me-2"></i>Latest Notice Board Entries</h5>
             <ul class="list-unstyled mb-0">
@@ -163,6 +175,33 @@
                       <small class="text-muted"><%= new Date(n.createdAt).toLocaleDateString('en-IN') %></small>
                     </div>
                     <p class="text-secondary mb-0" style="font-size: 0.85rem;"><%= n.content.substring(0, 80) %>...</p>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Recent Toppers -->
+        <div class="col-md-12 col-xl-4">
+          <div class="glass-card shadow-lg h-100">
+            <h5 class="text-white font-weight-bold mb-3"><i class="fa-solid fa-award text-info me-2"></i>Featured Board Toppers</h5>
+            <ul class="list-unstyled mb-0">
+              <% if (recentToppers.length === 0) { %>
+                <li class="text-center py-4 text-muted">No toppers registered yet.</li>
+              <% } else { %>
+                <% recentToppers.forEach((t, idx) => { %>
+                  <li class="pb-3 <%= idx < recentToppers.length - 1 ? 'border-bottom border-secondary mb-3' : '' %>">
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="<%= t.photo %>" alt="<%= t.name %>" class="rounded border border-secondary" style="width: 48px; height: 48px; object-fit: cover; background: transparent;">
+                      <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-0">
+                          <strong class="text-info" style="font-size: 0.9rem;"><%= t.name %></strong>
+                          <span class="badge bg-secondary bg-opacity-20 text-warning" style="font-size: 0.75rem;"><%= t.marks %></span>
+                        </div>
+                        <p class="text-secondary mb-0" style="font-size: 0.8rem; font-style: italic;">"<%= t.testimonial.substring(0, 50) %>..."</p>
+                      </div>
+                    </div>
                   </li>
                 <% }) %>
               <% } %>

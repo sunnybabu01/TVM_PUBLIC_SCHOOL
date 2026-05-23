@@ -1,5 +1,6 @@
 const app = require('./app');
 const connectDB = require('./config/db');
+const { startLocalMongo } = require('./utils/dbStarter');
 
 // Set Server Listening Port
 const PORT = process.env.PORT || 3000;
@@ -7,6 +8,9 @@ const PORT = process.env.PORT || 3000;
 // Connect to Database and start web server
 const startServer = async () => {
   try {
+    // 0. Auto-start local MongoDB if not already running
+    await startLocalMongo();
+
     // 1. Fire up database connection
     await connectDB();
 

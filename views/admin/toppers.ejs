@@ -1,0 +1,295 @@
+<%- include('../partials/header') %>
+
+<div class="dashboard-layout">
+  <%- include('../partials/sidebar') %>
+  
+  <main class="main-content-tvm">
+    <%- include('../partials/navbar') %>
+    <%- include('../partials/messages') %>
+    
+    <div class="container-fluid p-0">
+      
+      <!-- Header with Add button -->
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+          <h2 class="text-white font-weight-bold mb-1">Academic Toppers Directory</h2>
+          <p class="text-secondary mb-0" style="font-size: 0.9rem;">Manage dynamic academic board toppers, marks, testimonials, and live photo updates.</p>
+        </div>
+        <button class="btn btn-tvm-primary px-4 py-3" data-bs-toggle="modal" data-bs-target="#addTopperModal">
+          <i class="fa-solid fa-plus me-2"></i>Add Academic Topper
+        </button>
+      </div>
+
+      <!-- Main Directory Glass Card -->
+      <div class="glass-card shadow-lg" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-glass);">
+        <div class="table-responsive">
+          <table class="tvm-table">
+            <thead>
+              <tr>
+                <th>Profile Photo</th>
+                <th>Full Name</th>
+                <th>Class / Standard</th>
+                <th>Marks / Grade</th>
+                <th>Testimonial Preview</th>
+                <th>Featured Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (toppers.length === 0) { %>
+                <tr>
+                  <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="fa-solid fa-trophy fs-1 d-block mb-3 text-warning opacity-50"></i>
+                    No academic board toppers added yet. Register toppers to showcase them live on the portal.
+                  </td>
+                </tr>
+              <% } else { %>
+                <% toppers.forEach(topper => { %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <img src="<%= topper.photo %>" alt="<%= topper.name %>" class="rounded border border-secondary" style="width: 48px; height: 48px; object-fit: cover; background: transparent;">
+                      </div>
+                    </td>
+                    <td class="text-white font-weight-bold"><%= topper.name %></td>
+                    <td><%= topper.className %></td>
+                    <td>
+                      <span class="badge bg-secondary bg-opacity-20 text-warning px-2.5 py-1.5 font-weight-bold" style="border: 1px solid rgba(251, 191, 36, 0.2);">
+                        <i class="fa-solid fa-star text-warning me-1" style="font-size: 0.75rem;"></i><%= topper.marks %>
+                      </span>
+                    </td>
+                    <td class="text-secondary small" title="<%= topper.testimonial %>">
+                      <%= topper.testimonial.length > 60 ? topper.testimonial.substring(0, 60) + '...' : topper.testimonial %>
+                    </td>
+                    <td>
+                      <% if (topper.isFeatured) { %>
+                        <span class="status-badge status-present" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25);">Featured Live</span>
+                      <% } else { %>
+                        <span class="status-badge status-absent" style="background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.25);">Hidden</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-2">
+                        <!-- Edit Button carrying data-attributes -->
+                        <button class="btn btn-tvm-secondary btn-sm edit-btn" 
+                                data-id="<%= topper._id %>"
+                                data-name="<%= topper.name %>"
+                                data-class="<%= topper.className %>"
+                                data-marks="<%= topper.marks %>"
+                                data-testimonial="<%= topper.testimonial %>"
+                                data-featured="<%= topper.isFeatured %>"
+                                data-photo="<%= topper.photo %>"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editTopperModal"
+                                title="Edit Records">
+                          <i class="fa-solid fa-pencil text-info"></i>
+                        </button>
+                        
+                        <!-- Delete form -->
+                        <form action="/admin/toppers/delete/<%= topper._id %>" method="POST" onsubmit="return confirm('Caution! Are you absolutely sure you want to permanently remove this Topper profile from the portal?');" style="display:inline;">
+                          <button type="submit" class="btn btn-tvm-secondary btn-sm" title="Remove Profile">
+                            <i class="fa-solid fa-trash-can text-danger"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= MODAL: ADD ACADEMIC TOPPER ================= -->
+<div class="modal fade" id="addTopperModal" tabindex="-1" aria-labelledby="addTopperLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card border border-secondary" style="background: var(--bg-slate);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white font-weight-bold" id="addTopperLabel">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Register Academic Topper
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/toppers/add" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12 text-center mb-3">
+              <div class="position-relative d-inline-block mx-auto mb-2">
+                <img src="/images/student_star.png" id="addPhotoPreview" alt="Topper Photo" class="rounded border border-warning img-thumbnail" style="width: 110px; height: 110px; object-fit: cover; background: transparent;">
+                <label for="addPhoto" class="position-absolute bottom-0 end-0 bg-warning text-dark rounded-circle border border-dark p-1 cursor-pointer hover-scale" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <i class="fa-solid fa-camera" style="font-size: 0.8rem;"></i>
+                </label>
+                <input type="file" name="photo" id="addPhoto" accept="image/png, image/jpeg, image/jpg" class="d-none" required>
+              </div>
+              <small class="text-muted d-block" style="font-size: 0.75rem;">Upload Photo (Required)</small>
+            </div>
+
+            <div class="col-12">
+              <label for="addName" class="glass-label">Topper Student Name</label>
+              <input type="text" name="name" id="addName" class="form-control glass-input" placeholder="e.g. Aarav Sharma" required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="addClass" class="glass-label">Class Name</label>
+              <input type="text" name="className" id="addClass" class="form-control glass-input" placeholder="e.g. Class X" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="addMarks" class="glass-label">Marks / Score Percentage</label>
+              <input type="text" name="marks" id="addMarks" class="form-control glass-input" placeholder="e.g. 98.6% CBSE Board" required>
+            </div>
+
+            <div class="col-12">
+              <label for="addTestimonial" class="glass-label">Student Testimonial / Experience Quote</label>
+              <textarea name="testimonial" id="addTestimonial" rows="3" class="form-control glass-input" placeholder="Enter student experience details or comments..." style="resize: none;" required></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Publish Topper Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: EDIT ACADEMIC TOPPER ================= -->
+<div class="modal fade" id="editTopperModal" tabindex="-1" aria-labelledby="editTopperLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card border border-secondary" style="background: var(--bg-slate);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white font-weight-bold" id="editTopperLabel">
+          <i class="fa-solid fa-pencil text-info me-2"></i>Modify Topper Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editForm" action="" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12 text-center mb-3">
+              <div class="position-relative d-inline-block mx-auto mb-2">
+                <img src="/images/student_star.png" id="editPhotoPreview" alt="Topper Photo" class="rounded border border-info img-thumbnail" style="width: 110px; height: 110px; object-fit: cover; background: transparent;">
+                <label for="editPhoto" class="position-absolute bottom-0 end-0 bg-info text-dark rounded-circle border border-dark p-1 cursor-pointer hover-scale" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <i class="fa-solid fa-camera" style="font-size: 0.8rem;"></i>
+                </label>
+                <input type="file" name="photo" id="editPhoto" accept="image/png, image/jpeg, image/jpg" class="d-none">
+              </div>
+              <small class="text-muted d-block" style="font-size: 0.75rem;">Modify Photo (Optional)</small>
+            </div>
+
+            <div class="col-12">
+              <label for="editName" class="glass-label">Student Name</label>
+              <input type="text" name="name" id="editName" class="form-control glass-input" required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="editClass" class="glass-label">Class Name</label>
+              <input type="text" name="className" id="editClass" class="form-control glass-input" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editMarks" class="glass-label">Marks / Score Percentage</label>
+              <input type="text" name="marks" id="editMarks" class="form-control glass-input" required>
+            </div>
+
+            <div class="col-12">
+              <label for="editTestimonial" class="glass-label">Student Testimonial</label>
+              <textarea name="testimonial" id="editTestimonial" rows="3" class="form-control glass-input" style="resize: none;" required></textarea>
+            </div>
+
+            <div class="col-12">
+              <label for="editFeatured" class="glass-label">Featured Status</label>
+              <select name="isFeatured" id="editFeatured" class="form-select glass-input text-white" style="background-color: var(--bg-core);" required>
+                <option value="true">Featured Live on Portal</option>
+                <option value="false">Hidden from Public Views</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-tvm-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-tvm-primary">Commit Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Modal Filler JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editButtons = document.querySelectorAll('.edit-btn');
+    const editForm = document.getElementById('editForm');
+    const editName = document.getElementById('editName');
+    const editClass = document.getElementById('editClass');
+    const editMarks = document.getElementById('editMarks');
+    const editTestimonial = document.getElementById('editTestimonial');
+    const editFeatured = document.getElementById('editFeatured');
+    const editPhotoPreview = document.getElementById('editPhotoPreview');
+
+    editButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        const className = btn.getAttribute('data-class');
+        const marks = btn.getAttribute('data-marks');
+        const testimonial = btn.getAttribute('data-testimonial');
+        const featured = btn.getAttribute('data-featured');
+        const photo = btn.getAttribute('data-photo');
+
+        // Dynamically assign form action route
+        editForm.action = `/admin/toppers/edit/${id}`;
+        
+        // Populate inputs
+        editName.value = name;
+        editClass.value = className;
+        editMarks.value = marks;
+        editTestimonial.value = testimonial;
+        editFeatured.value = featured === 'true' ? 'true' : 'false';
+        editPhotoPreview.src = photo || '/images/student_star.png';
+      });
+    });
+
+    // Client-side real-time preview for Add topper modal
+    document.getElementById('addPhoto').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size exceeds 2MB limit! Please select a smaller photo.');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('addPhotoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Client-side real-time preview for Edit topper modal
+    document.getElementById('editPhoto').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size exceeds 2MB limit! Please select a smaller photo.');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('editPhotoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

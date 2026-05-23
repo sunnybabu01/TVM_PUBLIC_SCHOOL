@@ -6,6 +6,9 @@ const { redirectIfLoggedIn } = require('../middleware/authMiddleware');
 router.get('/login', redirectIfLoggedIn, authController.getLogin);
 router.post('/login', authController.postLogin);
 
+router.get('/register', redirectIfLoggedIn, authController.getRegister);
+router.post('/register', authController.postRegister);
+
 router.get('/verify-otp', authController.getVerifyOtp);
 router.post('/verify-otp', authController.postVerifyOtp);
 
