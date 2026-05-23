@@ -36,17 +36,32 @@ A complete, modern, responsive, and secure School ERP Management System built wi
 3. **Configure Environment variables**:
    Create a `.env` file in the root folder with:
    ```ini
-   PORT=3000
-   MONGODB_URI=mongodb://127.0.0.1:27017/tvm_school_erp
-   SESSION_SECRET=super_secret_tvm_erp_session_key_2026
-   
-   # Optional SMTP (Gmail / Mailtrap)
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USER=your_email@gmail.com
-   SMTP_PASS=your_app_password
-   SMTP_FROM="TVM Public School" <your_email@gmail.com>
-   ```
+  PORT=3000
+MONGODB_URI=mongodb+srv://sunny824118_db_user:p5A6TZ9Mn2EwunKJ@cluster0.uxcsxtc.mongodb.net/
+SESSION_SECRET=super_secret_tvm_erp_session_key_2026
+
+# SMTP Server details for Email Authentication / OTP
+# If empty, OTPs will be printed to the server terminal console for easy testing.
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=sunny824118@gmail.com
+EMAIL_PASS=skgofhphjnddoaei
+EMAIL_FROM=noreply@tvmschoolpatna.edu.in
+
+# Stripe Keys (Simulated Payment mode is active if these are left blank)
+STRIPE_PUBLISHABLE_KEY=pk_test_51TMBQ5LZidVuhY14rml7paWJRLA4vH5qzyFa2wBrFPZvI8i3Qqwa1M5DpyVbvmtPzeXXx43ObFse2qQrTZ3CLtyT00PKBeJHrf
+STRIPE_SECRET_KEY=sk_test_51TMBQ5LZidVuhY14EJVOMXxSy6xtKb3OkIgIRzJUGBuvHz8X58pgSD1RyDXZ5HJpRlSNo5THm6NJIZUSGlCBB3w100jRpyyIJF
+
+
+CLOUDINARY_CLOUD_NAME=dhd9nwxb7
+CLOUDINARY_API_KEY=147841561584472
+CLOUDINARY_API_SECRET=RMlvxzkr9u-CSmneLN6gC-90708
+
+# Razorpay Keys (Simulated Payment mode is active if these are left blank)
+RAZORPAY_KEY_ID=rzp_test_SsLxwDqSpG14GW
+RAZORPAY_KEY_SECRET=6oaW56Sr24bM7StouegqMYSW
+
+NODE_ENV=development
 
 4. **Seed Database Records**:
    ```bash
